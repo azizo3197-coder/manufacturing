@@ -1,0 +1,845 @@
+html_content = """<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MNG222 Study Guide — Lectures 1–6</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Sora:wght@300;400;600;700;800&display=swap');
+
+  :root {
+    --bg: #0d0f14;
+    --surface: #13161e;
+    --surface2: #1a1e2a;
+    --border: #242838;
+    --accent: #5b8cff;
+    --accent2: #ff6b6b;
+    --accent3: #36d6a0;
+    --accent4: #f0c040;
+    --text: #e4e8f5;
+    --text-muted: #7a85a3;
+    --text-dim: #4a5170;
+    --code-bg: #0a0c12;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Sora', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  /* SIDEBAR */
+  .sidebar {
+    position: fixed;
+    left: 0; top: 0; bottom: 0;
+    width: 220px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    z-index: 100;
+    padding: 0 0 32px 0;
+  }
+
+  .sidebar-logo {
+    padding: 24px 20px 20px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 12px;
+  }
+
+  .sidebar-logo h1 {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .sidebar-logo p {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 3px;
+  }
+
+  .nav-item {
+    display: block;
+    padding: 10px 20px;
+    font-size: 13px;
+    color: var(--text-muted);
+    text-decoration: none;
+    border-left: 2px solid transparent;
+    transition: all 0.15s;
+    cursor: pointer;
+  }
+
+  .nav-item:hover {
+    color: var(--text);
+    background: var(--surface2);
+    border-left-color: var(--accent);
+  }
+
+  .nav-item.active {
+    color: var(--accent);
+    background: rgba(91, 140, 255, 0.07);
+    border-left-color: var(--accent);
+  }
+
+  /* MAIN */
+  .main {
+    margin-left: 220px;
+    min-height: 100vh;
+    padding: 48px 56px;
+    max-width: 1040px;
+  }
+
+  /* SECTIONS */
+  .section { display: none; animation: fadeIn 0.25s ease; }
+  .section.active { display: block; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* SECTION HEADER */
+  .section-header {
+    margin-bottom: 40px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .lecture-tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 4px;
+    margin-bottom: 12px;
+  }
+
+  .tag-l1 { background: rgba(91,140,255,0.15); color: var(--accent); }
+  .tag-l2 { background: rgba(54,214,160,0.15); color: var(--accent3); }
+  .tag-l3 { background: rgba(240,192,64,0.15); color: var(--accent4); }
+  .tag-l4 { background: rgba(255,107,107,0.15); color: var(--accent2); }
+  .tag-l5 { background: rgba(180,100,255,0.15); color: #b46aff; }
+  .tag-l6 { background: rgba(0,188,212,0.15); color: #00bcd4; }
+
+  .section-header h2 {
+    font-size: 32px;
+    font-weight: 800;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+
+  .section-header p {
+    color: var(--text-muted);
+    margin-top: 8px;
+    font-size: 14px;
+    font-weight: 300;
+  }
+
+  /* TOPIC DIVIDER */
+  .topic-divider {
+    margin: 40px 0 28px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .topic-divider h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-muted);
+  }
+
+  /* CARDS */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px 28px;
+    margin-bottom: 24px;
+  }
+
+  .card h3 {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .card h3 .icon {
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  .icon-blue   { background: rgba(91,140,255,0.15); }
+  .icon-green  { background: rgba(54,214,160,0.15); }
+  .icon-yellow { background: rgba(240,192,64,0.15); }
+  .icon-red    { background: rgba(255,107,107,0.15); }
+  .icon-purple { background: rgba(180,100,255,0.15); }
+  .icon-cyan   { background: rgba(0,188,212,0.15); }
+
+  /* CODE BLOCKS */
+  pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px 20px;
+    overflow-x: auto;
+    margin: 14px 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.8;
+  }
+
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: #a8c1ff;
+  }
+
+  pre code {
+    background: none;
+    border: none;
+    padding: 0;
+    color: inherit;
+  }
+
+  .kw  { color: #ff79c6; }
+  .ty  { color: #8be9fd; }
+  .st  { color: #f1fa8c; }
+  .cm  { color: #6272a4; font-style: italic; }
+  .fn  { color: #50fa7b; }
+  .nb  { color: #bd93f9; }
+  .op  { color: #ff6b6b; }
+  .co  { color: var(--text); }
+
+  /* TABLES */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 14px 0;
+    font-size: 14px;
+  }
+
+  th {
+    text-align: left;
+    padding: 10px 14px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  td {
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    vertical-align: top;
+  }
+
+  tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+  td code { font-size: 12.5px; }
+
+  /* LISTS */
+  ul, ol { padding-left: 22px; margin: 10px 0; }
+  li { margin-bottom: 6px; }
+
+  /* WARN / TIP BOXES */
+  .warn {
+    background: rgba(255,107,107,0.08);
+    border: 1px solid rgba(255,107,107,0.3);
+    border-left: 3px solid var(--accent2);
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin: 14px 0;
+    font-size: 14px;
+  }
+  .warn strong { color: var(--accent2); }
+
+  .tip {
+    background: rgba(54,214,160,0.07);
+    border: 1px solid rgba(54,214,160,0.25);
+    border-left: 3px solid var(--accent3);
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin: 14px 0;
+    font-size: 14px;
+  }
+  .tip strong { color: var(--accent3); }
+
+  /* GRID */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  /* BADGE */
+  .badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 3px;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+  .badge-exam { background: rgba(255,107,107,0.2); color: var(--accent2); }
+  .badge-imp  { background: rgba(240,192,64,0.2);  color: var(--accent4); }
+
+  p { margin: 10px 0; }
+  h4 { font-size: 14px; font-weight: 700; margin: 18px 0 8px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; }
+
+  /* HOME */
+  .home-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 32px;
+  }
+
+  .home-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 22px 24px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+
+  .home-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(91,140,255,0.1);
+  }
+
+  .home-card .num {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .home-card h3 { font-size: 15px; margin-bottom: 8px; }
+  .home-card p  { font-size: 13px; color: var(--text-muted); margin: 0; }
+
+  /* BACK BTN */
+  .back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted);
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 14px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    transition: all 0.15s;
+    text-decoration: none;
+  }
+  .back-btn:hover { color: var(--accent); border-color: var(--accent); }
+
+  /* NAV BAR */
+  .nav-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    gap: 10px;
+  }
+  .nav-bar .back-btn { margin-bottom: 0; }
+  .nav-arrows { display: flex; gap: 8px; align-items: center; }
+  .nav-arrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted);
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 14px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .nav-arrow:hover { color: var(--accent); border-color: var(--accent); }
+  .nav-arrow:disabled { opacity: 0.25; cursor: default; pointer-events: none; }
+  .slide-counter {
+    font-size: 11px;
+    color: var(--text-dim);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+  }
+  .bottom-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 32px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    gap: 10px;
+  }
+
+  /* MOBILE */
+  .mobile-topbar {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 18px;
+    z-index: 200;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .mobile-topbar span { font-size: 13px; font-weight: 700; color: var(--accent); letter-spacing: 0.08em; }
+  .hamburger {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 6px;
+    padding: 6px 10px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  .sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 99;
+  }
+  .sidebar-overlay.open { display: block; }
+
+  @media (max-width: 800px) {
+    .grid-2 { grid-template-columns: 1fr; }
+    .home-grid { grid-template-columns: 1fr; }
+    .main { margin-left: 0; padding: 72px 18px 24px; }
+    .sidebar { transform: translateX(-100%); transition: transform 0.25s ease; z-index: 150; }
+    .sidebar.open { transform: translateX(0); }
+    .mobile-topbar { display: flex; }
+    .back-btn { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <h1>MNG222 Guide</h1>
+    <p>Lectures 1 – 6</p>
+    <p style="margin-top:6px; font-size:11px; color:#5b8cff; font-weight:600; letter-spacing:0.05em;">Nile University</p>
+  </div>
+
+  <a class="nav-item active" onclick="show('home')">📚 All Lectures</a>
+  <a class="nav-item" onclick="show('l1')">L1 — Intro to Manufacturing</a>
+  <a class="nav-item" onclick="show('l2')">L2 — Theory of Machining</a>
+  <a class="nav-item" onclick="show('l3')">L3 — Machining Ops 1</a>
+  <a class="nav-item" onclick="show('l4')">L4 — Machining Ops 2</a>
+  <a class="nav-item" onclick="show('l5')">L5 — Bulk Deformation</a>
+  <a class="nav-item" onclick="show('l6')">L6 — Sheet Metalworking</a>
+</nav>
+
+<!-- MOBILE TOP BAR -->
+<div class="mobile-topbar">
+  <span>MNG222 Study Guide <span style="font-size:10px; color:var(--text-muted); font-weight:400;">Nile University</span></span>
+  <button class="hamburger" onclick="toggleSidebar()">☰ Menu</button>
+</div>
+<div class="sidebar-overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+<!-- MAIN CONTENT -->
+<main class="main">
+
+<!-- ===================== HOME ===================== -->
+<div id="home" class="section active">
+  <div class="section-header">
+    <div class="lecture-tag tag-l1">Study Guide</div>
+    <h2>Manufacturing Processes (MNG222)</h2>
+    <p>Click any card or use the sidebar to jump to a lecture summary.</p>
+  </div>
+  <div class="home-grid">
+    <a class="home-card" onclick="show('l1')">
+      <div class="num" style="color:var(--accent)">Lecture 1</div>
+      <h3>Intro to Manufacturing</h3>
+      <p>Production systems, material types, processing operations vs assembly.</p>
+    </a>
+    <a class="home-card" onclick="show('l2')">
+      <div class="num" style="color:var(--accent3)">Lecture 2</div>
+      <h3>Theory of Metal Machining</h3>
+      <p>Orthogonal cutting, Merchant equation, cutting forces, power &amp; energy.</p>
+    </a>
+    <a class="home-card" onclick="show('l3')">
+      <div class="num" style="color:var(--accent4)">Lecture 3</div>
+      <h3>Machining Operations 1</h3>
+      <p>Turning, milling, material removal rate (MRR), up vs down milling.</p>
+    </a>
+    <a class="home-card" onclick="show('l4')">
+      <div class="num" style="color:var(--accent2)">Lecture 4</div>
+      <h3>Machining Operations 2</h3>
+      <p>Drilling, shaping, planing, broaching, and sawing processes.</p>
+    </a>
+    <a class="home-card" onclick="show('l5')">
+      <div class="num" style="color:#b46aff">Lecture 5</div>
+      <h3>Bulk Deformation</h3>
+      <p>Rolling, forging, extrusion, wire/bar drawing, flow stress.</p>
+    </a>
+    <a class="home-card" onclick="show('l6')">
+      <div class="num" style="color:#00bcd4">Lecture 6</div>
+      <h3>Sheet Metalworking</h3>
+      <p>Cutting, bending, deep drawing, clearances, springback, die types.</p>
+    </a>
+  </div>
+</div>
+
+<!-- ===================== LECTURE 1 ===================== -->
+<div id="l1" class="section">
+  <div class="nav-bar">
+    <button class="back-btn" onclick="show('home')">⌂ Home</button>
+    <div class="nav-arrows">
+      <span class="slide-counter">1 / 6</span>
+      <button class="nav-arrow" disabled>← </button>
+      <button class="nav-arrow" onclick="show('l2')">Lecture 2 →</button>
+    </div>
+  </div>
+  <div class="section-header">
+    <div class="lecture-tag tag-l1">Lecture 1</div>
+    <h2>Intro to Manufacturing</h2>
+  </div>
+  <div class="topic-divider"><h3>💡 What is Manufacturing?</h3></div>
+  <div class="card">
+    <h3><span class="icon icon-blue">⚙️</span>Technological &amp; Economic Views</h3>
+    <p><strong>Technological:</strong> Applying physical/chemical processes to alter geometry, properties, or appearance of a starting material.</p>
+    <p><strong>Economic:</strong> Transforming materials into items of greater value via processing/assembly operations.</p>
+  </div>
+
+  <div class="topic-divider"><h3>📦 Materials &amp; Processes</h3></div>
+  <div class="card">
+    <h3><span class="icon icon-green">🧱</span>Four Material Categories</h3>
+    <ul>
+      <li><strong>Metals:</strong> Ferrous (steel, cast iron) &amp; Nonferrous (Al, Cu, Ti). Ductile, strong, conductive.</li>
+      <li><strong>Ceramics:</strong> Oxides, nitrides, carbides. Hard, brittle, insulating.</li>
+      <li><strong>Polymers:</strong> Thermoplastics, thermosets, elastomers. Light, easily shaped at low temps.</li>
+      <li><strong>Composites:</strong> Matrix + reinforcement (e.g., fiberglass).</li>
+    </ul>
+  </div>
+  
+  <div class="card">
+    <h3><span class="icon icon-yellow">🔄</span>Processing Operations <span class="badge badge-exam">EXAM</span></h3>
+    <table>
+      <tr><th>State</th><th>Process</th><th>Examples</th></tr>
+      <tr><td>Liquid</td><td>Solidification</td><td>Casting (metals), Molding (plastics)</td></tr>
+      <tr><td>Powder</td><td>Particulate</td><td>Press &amp; Sinter</td></tr>
+      <tr><td>Ductile Solid</td><td>Deformation</td><td>Rolling, Forging, Extrusion</td></tr>
+      <tr><td>Solid</td><td>Material Removal</td><td>Turning, Milling, Drilling, Grinding</td></tr>
+    </table>
+  </div>
+  <div class="bottom-nav">
+    <button class="nav-arrow" disabled>←</button>
+    <span class="slide-counter">1 / 6</span>
+    <button class="nav-arrow" onclick="show('l2')">→</button>
+  </div>
+</div>
+
+<!-- ===================== LECTURE 2 ===================== -->
+<div id="l2" class="section">
+  <div class="nav-bar">
+    <button class="back-btn" onclick="show('home')">⌂ Home</button>
+    <div class="nav-arrows">
+      <span class="slide-counter">2 / 6</span>
+      <button class="nav-arrow" onclick="show('l1')">← </button>
+      <button class="nav-arrow" onclick="show('l3')">Lecture 3 →</button>
+    </div>
+  </div>
+  <div class="section-header">
+    <div class="lecture-tag tag-l2">Lecture 2</div>
+    <h2>Theory of Metal Machining</h2>
+  </div>
+  <div class="topic-divider"><h3>📐 Orthogonal Cutting Model</h3></div>
+  <div class="card">
+    <h3><span class="icon icon-green">✂️</span>Chip Formation <span class="badge badge-exam">EXAM</span></h3>
+    <p>Orthogonal model reduces 3D cuts to 2D. The cutting edge is perpendicular to motion.</p>
+    <ul>
+      <li><strong>Chip thickness ratio (r):</strong> <code>r = t_o / t_c</code> (always &lt; 1 because chip gets thicker).</li>
+      <li><strong>Shear angle (φ):</strong> <code>tan φ = r cos α / (1 - r sin α)</code></li>
+      <li><strong>Shear strain (γ):</strong> <code>γ = tan(φ - α) + cot φ</code></li>
+    </ul>
+  </div>
+  
+  <div class="topic-divider"><h3>⚖️ Force &amp; Merchant Equation</h3></div>
+  <div class="card">
+    <h3><span class="icon icon-blue">⚖️</span>Forces in Machining</h3>
+    <p>Only <strong>Cutting Force (F_c)</strong> does work. <strong>Thrust force (F_t)</strong> causes deflection.</p>
+    <p><strong>Merchant Equation:</strong> <code>φ = 45° + α/2 - β/2</code></p>
+    <div class="tip">To get a cheaper cut (lower power), you want a <strong>larger shear angle (φ)</strong>. Achieve this by increasing rake angle (α) or reducing friction (β).</div>
+  </div>
+  
+  <div class="topic-divider"><h3>⚡ Power &amp; Energy</h3></div>
+  <div class="card">
+    <h3><span class="icon icon-yellow">⚡</span>Cutting Power</h3>
+    <pre>P_c = F_c * v
+P_g = P_c / E (Gross Power, E = efficiency)</pre>
+    <p><strong>Specific Energy (U):</strong> Energy required to remove 1 unit volume of material. <code>P_c = U * R_MR</code></p>
+    <div class="warn">As uncut chip thickness (t_o) falls, specific energy <strong>rises</strong> (Size Effect).</div>
+  </div>
+  <div class="bottom-nav">
+    <button class="nav-arrow" onclick="show('l1')">←</button>
+    <span class="slide-counter">2 / 6</span>
+    <button class="nav-arrow" onclick="show('l3')">→</button>
+  </div>
+</div>
+
+<!-- ===================== LECTURE 3 ===================== -->
+<div id="l3" class="section">
+  <div class="nav-bar">
+    <button class="back-btn" onclick="show('home')">⌂ Home</button>
+    <div class="nav-arrows">
+      <span class="slide-counter">3 / 6</span>
+      <button class="nav-arrow" onclick="show('l2')">← </button>
+      <button class="nav-arrow" onclick="show('l4')">Lecture 4 →</button>
+    </div>
+  </div>
+  <div class="section-header">
+    <div class="lecture-tag tag-l3">Lecture 3</div>
+    <h2>Machining Operations 1</h2>
+  </div>
+  <div class="topic-divider"><h3>🔄 Turning Operations</h3></div>
+  <div class="card">
+    <h3><span class="icon icon-blue">🔄</span>Turning Formulas <span class="badge badge-exam">EXAM</span></h3>
+    <p>Single-point tool removes material from a rotating workpiece.</p>
+    <table>
+      <tr><th>Parameter</th><th>Formula</th></tr>
+      <tr><td>Spindle Speed (N)</td><td><code>N = v / (π * D_o)</code></td></tr>
+      <tr><td>Feed Rate (f_r)</td><td><code>f_r = N * f</code></td></tr>
+      <tr><td>Machining Time (T_m)</td><td><code>T_m = L / f_r</code></td></tr>
+      <tr><td>Material Removal Rate (R_MR)</td><td><code>R_MR = v * f * d</code></td></tr>
+    </table>
+  </div>
+
+  <div class="topic-divider"><h3>⚙️ Milling Operations</h3></div>
+  <div class="card">
+    <h3><span class="icon icon-green">⚙️</span>Peripheral vs Face Milling</h3>
+    <ul>
+      <li><strong>Peripheral (Plain) Milling:</strong> Cutter axis is parallel to surface. Outside edges do the cutting.</li>
+      <li><strong>Face Milling:</strong> Cutter axis is perpendicular to surface. Edges on both end and periphery cut.</li>
+    </ul>
+    <p><strong>Feed Rate:</strong> <code>f_r = N * n_t * f</code> (where n_t = number of teeth)</p>
+    <div class="warn">Don't forget the <strong>approach distance (A)</strong> in milling time calculations! <code>T_m = (L + A) / f_r</code></div>
+  </div>
+  
+  <div class="card">
+    <h3><span class="icon icon-purple">⬆️</span>Up vs Down Milling</h3>
+    <p><strong>Up Milling:</strong> Teeth move against feed. Chip starts thin, grows thick. Tendency to lift work.</p>
+    <p><strong>Down (Climb) Milling:</strong> Teeth move with feed. Chip starts thick, thins out. Pushes work down (simpler fixturing, better finish).</p>
+  </div>
+  <div class="bottom-nav">
+    <button class="nav-arrow" onclick="show('l2')">←</button>
+    <span class="slide-counter">3 / 6</span>
+    <button class="nav-arrow" onclick="show('l4')">→</button>
+  </div>
+</div>
+
+<!-- ===================== LECTURE 4 ===================== -->
+<div id="l4" class="section">
+  <div class="nav-bar">
+    <button class="back-btn" onclick="show('home')">⌂ Home</button>
+    <div class="nav-arrows">
+      <span class="slide-counter">4 / 6</span>
+      <button class="nav-arrow" onclick="show('l3')">← </button>
+      <button class="nav-arrow" onclick="show('l5')">Lecture 5 →</button>
+    </div>
+  </div>
+  <div class="section-header">
+    <div class="lecture-tag tag-l4">Lecture 4</div>
+    <h2>Machining Operations 2</h2>
+  </div>
+  <div class="topic-divider"><h3>🕳️ Drilling</h3></div>
+  <div class="card">
+    <h3><span class="icon icon-red">🕳️</span>Drilling Geometry &amp; Time <span class="badge badge-exam">EXAM</span></h3>
+    <p>Uses a twist drill with 2 cutting edges &amp; helical flutes.</p>
+    <pre>A (Approach) = 0.5 * D * tan(90 - θ/2)
+Through Hole: T_m = (t + A) / f_r
+Blind Hole: T_m = (d + A) / f_r</pre>
+    <div class="tip">Drill creates an oversize/rough hole. Use <strong>reaming</strong> for tolerance (diameter) and <strong>boring</strong> for position/straightness.</div>
+  </div>
+
+  <div class="topic-divider"><h3>📏 Shaping &amp; Planing</h3></div>
+  <div class="card">
+    <h3><span class="icon icon-blue">📏</span>Linear Cutting Motions</h3>
+    <ul>
+      <li><strong>Shaping:</strong> Tool moves (ram), work feeds sideways. Used for smaller parts.</li>
+      <li><strong>Planing:</strong> Work moves (table), tool feeds across. Used for massive parts.</li>
+    </ul>
+    <p>Both use a <strong>quick return</strong> mechanism to minimize idle time on the non-cutting stroke.</p>
+  </div>
+
+  <div class="topic-divider"><h3>🪚 Broaching &amp; Sawing</h3></div>
+  <div class="card">
+    <h3><span class="icon icon-yellow">🪚</span>Broaching</h3>
+    <p>A multi-tooth tool where each tooth is slightly higher than the last. Cuts the whole profile in one linear stroke. Extremely fast but tooling is expensive.</p>
+  </div>
+  <div class="bottom-nav">
+    <button class="nav-arrow" onclick="show('l3')">←</button>
+    <span class="slide-counter">4 / 6</span>
+    <button class="nav-arrow" onclick="show('l5')">→</button>
+  </div>
+</div>
+
+<!-- ===================== LECTURE 5 ===================== -->
+<div id="l5" class="section">
+  <div class="nav-bar">
+    <button class="back-btn" onclick="show('home')">⌂ Home</button>
+    <div class="nav-arrows">
+      <span class="slide-counter">5 / 6</span>
+      <button class="nav-arrow" onclick="show('l4')">← </button>
+      <button class="nav-arrow" onclick="show('l6')">Lecture 6 →</button>
+    </div>
+  </div>
+  <div class="section-header">
+    <div class="lecture-tag tag-l5">Lecture 5</div>
+    <h2>Bulk Deformation</h2>
+  </div>
+  <div class="topic-divider"><h3>🔥 Bulk Deformation Fundamentals</h3></div>
+  <div class="card">
+    <h3><span class="icon icon-purple">🔥</span>Flow Stress &amp; Temp</h3>
+    <p><strong>Flow Stress:</strong> <code>Y_f = K * ε^n</code> (Stress needed to keep metal deforming).</p>
+    <p><strong>Temperatures:</strong></p>
+    <ul>
+      <li><strong>Cold:</strong> High force, strain hardening, good finish/tolerance.</li>
+      <li><strong>Hot:</strong> Above recrystallization temp. Low force, large shape changes, no strain hardening, scale/poor finish.</li>
+    </ul>
+  </div>
+
+  <div class="topic-divider"><h3>⚙️ Rolling</h3></div>
+  <div class="card">
+    <h3><span class="icon icon-green">⚙️</span>Flat Rolling Limits <span class="badge badge-exam">EXAM</span></h3>
+    <p>Reducing thickness between 2 opposing rolls.</p>
+    <pre>Draft (d) = t_o - t_f
+Max Draft (d_max) = μ^2 * R</pre>
+    <div class="warn">Friction (μ) limits the draft per pass. To get a bigger draft, you need larger rolls or higher friction (hot rolling).</div>
+  </div>
+
+  <div class="topic-divider"><h3>🔨 Forging &amp; Extrusion</h3></div>
+  <div class="card">
+    <h3><span class="icon icon-red">🔨</span>Forging Types</h3>
+    <ul>
+      <li><strong>Open-die:</strong> Flat dies (bulges/barrels due to friction).</li>
+      <li><strong>Impression-die:</strong> Dies contain shape. Excess metal squeezes out as <strong>flash</strong> (which helps build pressure to fill corners).</li>
+      <li><strong>Flashless:</strong> Work fully enclosed (coining). Requires exact starting volume.</li>
+    </ul>
+  </div>
+  
+  <div class="card">
+    <h3><span class="icon icon-blue">➡️</span>Extrusion</h3>
+    <p><strong>Direct:</strong> Ram pushes billet toward die. High friction because billet slides against container wall.</p>
+    <p><strong>Indirect:</strong> Die mounted on hollow ram; metal flows backward. No container friction = lower force.</p>
+  </div>
+  <div class="bottom-nav">
+    <button class="nav-arrow" onclick="show('l4')">←</button>
+    <span class="slide-counter">5 / 6</span>
+    <button class="nav-arrow" onclick="show('l6')">→</button>
+  </div>
+</div>
+
+<!-- ===================== LECTURE 6 ===================== -->
+<div id="l6" class="section">
+  <div class="nav-bar">
+    <button class="back-btn" onclick="show('home')">⌂ Home</button>
+    <div class="nav-arrows">
+      <span class="slide-counter">6 / 6</span>
+      <button class="nav-arrow" onclick="show('l5')">← </button>
+      <button class="nav-arrow" disabled>→</button>
+    </div>
+  </div>
+  <div class="section-header">
+    <div class="lecture-tag tag-l6">Lecture 6</div>
+    <h2>Sheet Metalworking</h2>
+  </div>
+  <div class="topic-divider"><h3>✂️ Sheet Metal Cutting</h3></div>
+  <div class="card">
+    <h3><span class="icon icon-cyan">✂️</span>Shearing &amp; Clearance <span class="badge badge-exam">EXAM</span></h3>
+    <p><strong>Blanking:</strong> Cut piece is the part (keep slug). <strong>Punching:</strong> Cut piece is scrap (keep sheet).</p>
+    <pre>Clearance (c) = A_c * t</pre>
+    <p><em>Sizing rule of thumb:</em> The part takes its size from the tool it is pushed against.</p>
+    <ul><li><strong>Blanking:</strong> Die = D_b, Punch = D_b - 2c</li><li><strong>Punching:</strong> Punch = D_h, Die = D_h + 2c</li></ul>
+  </div>
+
+  <div class="topic-divider"><h3>📐 Bending</h3></div>
+  <div class="card">
+    <h3><span class="icon icon-yellow">📐</span>Bend Allowance &amp; Springback</h3>
+    <p>Metal outside is stretched, inside is compressed. Neutral axis length stays same.</p>
+    <pre>BA = 2π * (α / 360) * (R + K_ba * t)</pre>
+    <p><strong>Springback:</strong> Elastic recovery opens the bend. Fix by <strong>overbending</strong> or <strong>bottoming</strong> (coining the bend).</p>
+  </div>
+
+  <div class="topic-divider"><h3>🕳️ Deep Drawing</h3></div>
+  <div class="card">
+    <h3><span class="icon icon-purple">🕳️</span>Drawing Feasibility <span class="badge badge-exam">EXAM</span></h3>
+    <p>Forming a flat blank into a hollow shape (cups, cans).</p>
+    <ul>
+      <li>Drawing Ratio <code>DR = D_b / D_p ≤ 2.0</code></li>
+      <li>Reduction <code>r = (D_b - D_p) / D_b ≤ 0.50</code></li>
+      <li>Thickness Ratio <code>t / D_b ≥ 1%</code></li>
+    </ul>
+    <div class="warn">If constraints are exceeded, the part requires <strong>redrawing</strong> steps. Too thin a blank causes <strong>wrinkling</strong>.</div>
+  </div>
+  <div class="bottom-nav">
+    <button class="nav-arrow" onclick="show('l5')">←</button>
+    <span class="slide-counter">6 / 6</span>
+    <button class="nav-arrow" disabled>→</button>
+  </div>
+</div>
+
+</main>
+<script>
+  function show(id) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    document.querySelectorAll('.nav-item').forEach(n => {
+      if (n.getAttribute('onclick') === `show('${id}')`) n.classList.add('active');
+    });
+    document.querySelector('.sidebar').classList.remove('open');
+    document.getElementById('overlay').classList.remove('open');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function toggleSidebar() {
+    document.querySelector('.sidebar').classList.toggle('open');
+    document.getElementById('overlay').classList.toggle('open');
+  }
+</script>
+</body>
+</html>
+"""
+
+with open('MNG222_Study_Guide.html', 'w', encoding='utf-8') as f:
+    f.write(html_content)
