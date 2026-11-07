@@ -1,845 +1,847 @@
-html_content = """<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MNG222 Study Guide — Lectures 1–6</title>
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>MNG222 Study Guide</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Sora:wght@300;400;600;700;800&display=swap">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Sora:wght@300;400;600;700;800&display=swap');
-
+  /* Layout: fixed sidebar + one scrolling main column; each lecture has Summary and Quiz tabs. Dark-first. */
   :root {
-    --bg: #0d0f14;
-    --surface: #13161e;
-    --surface2: #1a1e2a;
-    --border: #242838;
-    --accent: #5b8cff;
-    --accent2: #ff6b6b;
-    --accent3: #36d6a0;
-    --accent4: #f0c040;
-    --text: #e4e8f5;
-    --text-muted: #7a85a3;
-    --text-dim: #4a5170;
-    --code-bg: #0a0c12;
+    --bg: #0d0f14; --surface: #13161e; --surface2: #1a1e2a; --border: #262b3d;
+    --text: #e4e8f5; --muted: #8e98b6; --dim: #5d6688; --code-bg: #0a0c12;
+    --c1: #5b8cff; --c2: #36d6a0; --c3: #f0c040; --c4: #ff6b6b; --c5: #b46aff; --c6: #ff9f5a;
+    --good: #36d6a0; --bad: #ff6b6b;
+    --font: 'Sora', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Consolas, monospace;
+    --side-w: 248px;
+    color-scheme: dark;
   }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Sora', sans-serif;
-    font-size: 15px;
-    line-height: 1.7;
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) {
+      --bg: #f4f5fa; --surface: #ffffff; --surface2: #eceef7; --border: #d9dcea;
+      --text: #161a2b; --muted: #545d7c; --dim: #8189a6; --code-bg: #eef0f8;
+      --c1: #2d5bdb; --c2: #0c8f67; --c3: #9a6f00; --c4: #d13b3b; --c5: #8337d6; --c6: #c2601a;
+      --good: #0c8f67; --bad: #d13b3b; color-scheme: light;
+    }
   }
-
-  /* SIDEBAR */
-  .sidebar {
-    position: fixed;
-    left: 0; top: 0; bottom: 0;
-    width: 220px;
-    background: var(--surface);
-    border-right: 1px solid var(--border);
-    overflow-y: auto;
-    z-index: 100;
-    padding: 0 0 32px 0;
+  :root[data-theme="light"] {
+    --bg: #f4f5fa; --surface: #ffffff; --surface2: #eceef7; --border: #d9dcea;
+    --text: #161a2b; --muted: #545d7c; --dim: #8189a6; --code-bg: #eef0f8;
+    --c1: #2d5bdb; --c2: #0c8f67; --c3: #9a6f00; --c4: #d13b3b; --c5: #8337d6; --c6: #c2601a;
+    --good: #0c8f67; --bad: #d13b3b; color-scheme: light;
   }
+  :root[data-theme="dark"] { color-scheme: dark; }
 
-  .sidebar-logo {
-    padding: 24px 20px 20px;
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 12px;
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { background: var(--bg); color: var(--text); font-family: var(--font); font-size: 15px; line-height: 1.7; }
+  button { font-family: inherit; color: inherit; }
+  :focus-visible { outline: 2px solid var(--c1); outline-offset: 2px; }
+
+  /* Sidebar */
+  .sidebar { position: fixed; top: env(safe-area-inset-top, 0px); bottom: env(safe-area-inset-bottom, 0px); left: 0; width: var(--side-w); background: var(--surface); border-right: 1px solid var(--border); overflow-y: auto; z-index: 150; padding: 0 0 24px; }
+  .side-head { padding: 24px 20px 18px; border-bottom: 1px solid var(--border); margin-bottom: 10px; }
+  .side-head h1 { margin: 0; font-size: 13px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--c1); }
+  .side-head p { margin: 4px 0 0; font-size: 12px; color: var(--muted); }
+  .nav-item { display: flex; gap: 10px; align-items: baseline; width: 100%; text-align: left; background: none; border: 0; border-left: 3px solid transparent; padding: 10px 20px; font-size: 13px; line-height: 1.45; color: var(--muted); cursor: pointer; transition: background .15s, color .15s; }
+  .nav-item .n { font-family: var(--mono); font-size: 11px; color: var(--dim); flex: none; }
+  .nav-item:hover { color: var(--text); background: var(--surface2); }
+  .nav-item.active { color: var(--a, var(--c1)); background: color-mix(in srgb, var(--a, var(--c1)) 10%, transparent); border-left-color: var(--a, var(--c1)); }
+  .nav-item .best { margin-left: auto; font-family: var(--mono); font-size: 11px; color: var(--good); flex: none; }
+  .nav-sep { height: 1px; background: var(--border); margin: 10px 20px; }
+
+  /* Main */
+  .main { margin-left: var(--side-w); max-width: calc(1040px + var(--side-w)); padding: 48px 56px 64px; }
+  .view { animation: fade .25s ease; }
+  @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  .head { margin-bottom: 28px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
+  .tag { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; padding: 4px 10px; border-radius: 4px; margin-bottom: 12px; color: var(--a, var(--c1)); background: color-mix(in srgb, var(--a, var(--c1)) 15%, transparent); }
+  .head h2 { margin: 0; font-size: clamp(26px, 4vw, 38px); font-weight: 800; line-height: 1.15; letter-spacing: -.02em; text-wrap: balance; }
+  .head p { margin: 10px 0 0; color: var(--muted); font-size: 15px; font-weight: 300; max-width: 64ch; }
+
+  /* Home */
+  .home-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+  .home-card { text-align: left; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 22px 24px; cursor: pointer; display: block; width: 100%; transition: border-color .2s, transform .2s, box-shadow .2s; }
+  .home-card:hover { border-color: var(--a, var(--c1)); transform: translateY(-2px); box-shadow: 0 8px 28px color-mix(in srgb, var(--a, var(--c1)) 14%, transparent); }
+  .home-card .num { font-size: 11px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--a, var(--c1)); margin-bottom: 6px; display: flex; justify-content: space-between; gap: 8px; }
+  .home-card .num .best { font-family: var(--mono); letter-spacing: 0; color: var(--good); text-transform: none; }
+  .home-card h3 { margin: 0 0 8px; font-size: 16px; }
+  .home-card p { margin: 0; font-size: 13px; color: var(--muted); }
+  .home-card.wide { grid-column: 1 / -1; }
+
+  /* Lecture chrome */
+  .bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 22px; flex-wrap: wrap; }
+  .btn { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--muted); background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 7px 14px; cursor: pointer; transition: color .15s, border-color .15s; }
+  .btn:hover { color: var(--a, var(--c1)); border-color: var(--a, var(--c1)); }
+  .btn:disabled { opacity: .3; pointer-events: none; }
+  .btn.primary { background: var(--a, var(--c1)); border-color: var(--a, var(--c1)); color: var(--bg); }
+  .btn.primary:hover { color: var(--bg); filter: brightness(1.1); }
+  .arrows { display: flex; align-items: center; gap: 8px; }
+  .counter { font-family: var(--mono); font-size: 11px; color: var(--dim); letter-spacing: .08em; }
+  .tabs { display: inline-flex; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 3px; gap: 3px; margin-bottom: 28px; }
+  .tab { border: 0; background: none; padding: 7px 18px; border-radius: 6px; font-size: 13px; font-weight: 600; color: var(--muted); cursor: pointer; }
+  .tab[aria-selected="true"] { background: color-mix(in srgb, var(--a, var(--c1)) 16%, transparent); color: var(--a, var(--c1)); }
+  .bottom { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 32px; padding-top: 20px; border-top: 1px solid var(--border); flex-wrap: wrap; }
+
+  /* Summary content */
+  .lead { margin: 0 0 24px; padding: 16px 20px; border-radius: 8px; background: color-mix(in srgb, var(--a, var(--c1)) 8%, transparent); border: 1px solid color-mix(in srgb, var(--a, var(--c1)) 28%, transparent); font-size: 15px; }
+  .topic { margin: 36px 0 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border); font-size: 13px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 22px 26px; margin-bottom: 20px; min-width: 0; }
+  .card h3 { margin: 0 0 12px; font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+  .card h3::before { content: ""; width: 10px; height: 10px; border-radius: 3px; background: var(--a, var(--c1)); flex: none; }
+  .card p { margin: 8px 0; }
+  .card ul { margin: 8px 0; padding-left: 20px; }
+  .card li { margin-bottom: 6px; }
+  .card strong, .box strong { font-weight: 700; }
+  .grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-bottom: 20px; }
+  .grid2 .card { margin-bottom: 0; }
+  .tablewrap { overflow-x: auto; margin: 12px 0; border: 1px solid var(--border); border-radius: 8px; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 460px; }
+  th { text-align: left; padding: 10px 14px; background: var(--surface2); font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--border); }
+  td { padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tr:last-child td { border-bottom: 0; }
+  td:first-child { font-weight: 600; white-space: nowrap; }
+  .box { border-radius: 8px; padding: 14px 18px; margin: 14px 0 20px; font-size: 14px; border: 1px solid; border-left-width: 3px; }
+  .box.tip { background: color-mix(in srgb, var(--good) 8%, transparent); border-color: color-mix(in srgb, var(--good) 30%, transparent); border-left-color: var(--good); }
+  .box.tip strong { color: var(--good); }
+  .box.warn { background: color-mix(in srgb, var(--bad) 8%, transparent); border-color: color-mix(in srgb, var(--bad) 30%, transparent); border-left-color: var(--bad); }
+  .box.warn strong { color: var(--bad); }
+  .term { font-family: var(--mono); font-size: 12.5px; background: var(--code-bg); border: 1px solid var(--border); padding: 1px 6px; border-radius: 4px; color: var(--a, var(--c1)); white-space: nowrap; }
+
+  /* Quiz */
+  .quiz { max-width: 760px; }
+  .qmeta { display: flex; justify-content: space-between; align-items: center; font-family: var(--mono); font-size: 12px; color: var(--muted); margin-bottom: 10px; }
+  .progress { height: 4px; border-radius: 4px; background: var(--surface2); overflow: hidden; margin-bottom: 26px; }
+  .progress i { display: block; height: 100%; background: var(--a, var(--c1)); transition: width .3s; }
+  .qprompt { font-size: clamp(18px, 2.6vw, 22px); font-weight: 700; line-height: 1.4; margin: 0 0 22px; text-wrap: balance; }
+  .opts { display: grid; gap: 10px; }
+  .opt { display: flex; gap: 14px; align-items: flex-start; text-align: left; width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; cursor: pointer; font-size: 14.5px; line-height: 1.5; transition: border-color .15s, background .15s; }
+  .opt .k { font-family: var(--mono); font-size: 12px; font-weight: 700; width: 24px; height: 24px; border-radius: 6px; display: grid; place-items: center; background: var(--surface2); color: var(--muted); flex: none; }
+  .opt:hover:not(:disabled) { border-color: var(--a, var(--c1)); }
+  .opt:disabled { cursor: default; }
+  .opt.right { border-color: var(--good); background: color-mix(in srgb, var(--good) 10%, var(--surface)); }
+  .opt.right .k { background: var(--good); color: var(--bg); }
+  .opt.wrong { border-color: var(--bad); background: color-mix(in srgb, var(--bad) 10%, var(--surface)); }
+  .opt.wrong .k { background: var(--bad); color: var(--bg); }
+  .opt.dim { opacity: .55; }
+  .fb { margin-top: 18px; padding: 14px 18px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); font-size: 14px; }
+  .fb b { display: block; margin-bottom: 2px; }
+  .fb.ok b { color: var(--good); }
+  .fb.no b { color: var(--bad); }
+  .qfoot { display: flex; justify-content: space-between; align-items: center; margin-top: 22px; gap: 10px; flex-wrap: wrap; }
+  .hint { font-size: 12px; color: var(--dim); }
+  .score { font-size: clamp(44px, 9vw, 72px); font-weight: 800; letter-spacing: -.03em; line-height: 1; margin: 10px 0 6px; color: var(--a, var(--c1)); font-variant-numeric: tabular-nums; }
+  .review { margin-top: 28px; display: grid; gap: 12px; }
+  .rv { border: 1px solid var(--border); border-left: 3px solid var(--bad); border-radius: 8px; background: var(--surface); padding: 14px 18px; font-size: 14px; }
+  .rv p { margin: 0 0 6px; font-weight: 600; }
+  .rv .you { color: var(--bad); }
+  .rv .ans { color: var(--good); }
+  .rv small { display: block; margin-top: 6px; color: var(--muted); font-size: 13px; line-height: 1.55; }
+  .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+
+  /* Mobile */
+  .topbar { display: none; position: fixed; top: 0; left: 0; right: 0; z-index: 200; background: var(--surface); border-bottom: 1px solid var(--border); padding: calc(10px + env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) 10px max(16px, env(safe-area-inset-left, 0px)); align-items: center; justify-content: space-between; }
+  .topbar span { font-size: 13px; font-weight: 700; letter-spacing: .1em; color: var(--c1); }
+  .burger { background: none; border: 1px solid var(--border); border-radius: 6px; padding: 6px 12px; cursor: pointer; font-size: 13px; font-weight: 600; }
+  .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.6); z-index: 140; }
+  .overlay.open { display: block; }
+  @media (max-width: 820px) {
+    .main { margin-left: 0; padding: calc(72px + env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) 40px max(16px, env(safe-area-inset-left, 0px)); }
+    .sidebar { transform: translateX(-100%); transition: transform .25s ease; padding-left: env(safe-area-inset-left, 0px); }
+    .sidebar.open { transform: none; }
+    .topbar { display: flex; }
+    .home-grid, .grid2 { grid-template-columns: minmax(0, 1fr); }
+    .card { padding: 18px 18px; }
+    .btn.back { display: none; }
   }
-
-  .sidebar-logo h1 {
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--accent);
-  }
-
-  .sidebar-logo p {
-    font-size: 11px;
-    color: var(--text-muted);
-    margin-top: 3px;
-  }
-
-  .nav-item {
-    display: block;
-    padding: 10px 20px;
-    font-size: 13px;
-    color: var(--text-muted);
-    text-decoration: none;
-    border-left: 2px solid transparent;
-    transition: all 0.15s;
-    cursor: pointer;
-  }
-
-  .nav-item:hover {
-    color: var(--text);
-    background: var(--surface2);
-    border-left-color: var(--accent);
-  }
-
-  .nav-item.active {
-    color: var(--accent);
-    background: rgba(91, 140, 255, 0.07);
-    border-left-color: var(--accent);
-  }
-
-  /* MAIN */
-  .main {
-    margin-left: 220px;
-    min-height: 100vh;
-    padding: 48px 56px;
-    max-width: 1040px;
-  }
-
-  /* SECTIONS */
-  .section { display: none; animation: fadeIn 0.25s ease; }
-  .section.active { display: block; }
-
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(8px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  /* SECTION HEADER */
-  .section-header {
-    margin-bottom: 40px;
-    padding-bottom: 24px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .lecture-tag {
-    display: inline-block;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    padding: 4px 10px;
-    border-radius: 4px;
-    margin-bottom: 12px;
-  }
-
-  .tag-l1 { background: rgba(91,140,255,0.15); color: var(--accent); }
-  .tag-l2 { background: rgba(54,214,160,0.15); color: var(--accent3); }
-  .tag-l3 { background: rgba(240,192,64,0.15); color: var(--accent4); }
-  .tag-l4 { background: rgba(255,107,107,0.15); color: var(--accent2); }
-  .tag-l5 { background: rgba(180,100,255,0.15); color: #b46aff; }
-  .tag-l6 { background: rgba(0,188,212,0.15); color: #00bcd4; }
-
-  .section-header h2 {
-    font-size: 32px;
-    font-weight: 800;
-    line-height: 1.2;
-    letter-spacing: -0.02em;
-  }
-
-  .section-header p {
-    color: var(--text-muted);
-    margin-top: 8px;
-    font-size: 14px;
-    font-weight: 300;
-  }
-
-  /* TOPIC DIVIDER */
-  .topic-divider {
-    margin: 40px 0 28px;
-    padding-bottom: 14px;
-    border-bottom: 1px solid var(--border);
-  }
-  .topic-divider h3 {
-    font-size: 18px;
-    font-weight: 700;
-    color: var(--text-muted);
-  }
-
-  /* CARDS */
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 24px 28px;
-    margin-bottom: 24px;
-  }
-
-  .card h3 {
-    font-size: 16px;
-    font-weight: 700;
-    margin-bottom: 14px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .card h3 .icon {
-    width: 28px; height: 28px;
-    border-radius: 6px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 14px;
-    flex-shrink: 0;
-  }
-
-  .icon-blue   { background: rgba(91,140,255,0.15); }
-  .icon-green  { background: rgba(54,214,160,0.15); }
-  .icon-yellow { background: rgba(240,192,64,0.15); }
-  .icon-red    { background: rgba(255,107,107,0.15); }
-  .icon-purple { background: rgba(180,100,255,0.15); }
-  .icon-cyan   { background: rgba(0,188,212,0.15); }
-
-  /* CODE BLOCKS */
-  pre {
-    background: var(--code-bg);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 18px 20px;
-    overflow-x: auto;
-    margin: 14px 0;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
-    line-height: 1.8;
-  }
-
-  code {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
-    background: var(--code-bg);
-    border: 1px solid var(--border);
-    padding: 2px 6px;
-    border-radius: 4px;
-    color: #a8c1ff;
-  }
-
-  pre code {
-    background: none;
-    border: none;
-    padding: 0;
-    color: inherit;
-  }
-
-  .kw  { color: #ff79c6; }
-  .ty  { color: #8be9fd; }
-  .st  { color: #f1fa8c; }
-  .cm  { color: #6272a4; font-style: italic; }
-  .fn  { color: #50fa7b; }
-  .nb  { color: #bd93f9; }
-  .op  { color: #ff6b6b; }
-  .co  { color: var(--text); }
-
-  /* TABLES */
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 14px 0;
-    font-size: 14px;
-  }
-
-  th {
-    text-align: left;
-    padding: 10px 14px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-  }
-
-  td {
-    padding: 10px 14px;
-    border: 1px solid var(--border);
-    vertical-align: top;
-  }
-
-  tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
-  td code { font-size: 12.5px; }
-
-  /* LISTS */
-  ul, ol { padding-left: 22px; margin: 10px 0; }
-  li { margin-bottom: 6px; }
-
-  /* WARN / TIP BOXES */
-  .warn {
-    background: rgba(255,107,107,0.08);
-    border: 1px solid rgba(255,107,107,0.3);
-    border-left: 3px solid var(--accent2);
-    border-radius: 8px;
-    padding: 14px 18px;
-    margin: 14px 0;
-    font-size: 14px;
-  }
-  .warn strong { color: var(--accent2); }
-
-  .tip {
-    background: rgba(54,214,160,0.07);
-    border: 1px solid rgba(54,214,160,0.25);
-    border-left: 3px solid var(--accent3);
-    border-radius: 8px;
-    padding: 14px 18px;
-    margin: 14px 0;
-    font-size: 14px;
-  }
-  .tip strong { color: var(--accent3); }
-
-  /* GRID */
-  .grid-2 {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-    margin-bottom: 24px;
-  }
-
-  /* BADGE */
-  .badge {
-    display: inline-block;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    padding: 2px 7px;
-    border-radius: 3px;
-    margin-left: 8px;
-    vertical-align: middle;
-  }
-  .badge-exam { background: rgba(255,107,107,0.2); color: var(--accent2); }
-  .badge-imp  { background: rgba(240,192,64,0.2);  color: var(--accent4); }
-
-  p { margin: 10px 0; }
-  h4 { font-size: 14px; font-weight: 700; margin: 18px 0 8px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; }
-
-  /* HOME */
-  .home-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-    margin-top: 32px;
-  }
-
-  .home-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 22px 24px;
-    cursor: pointer;
-    transition: all 0.2s;
-    text-decoration: none;
-    color: inherit;
-    display: block;
-  }
-
-  .home-card:hover {
-    border-color: var(--accent);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 32px rgba(91,140,255,0.1);
-  }
-
-  .home-card .num {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    margin-bottom: 6px;
-  }
-
-  .home-card h3 { font-size: 15px; margin-bottom: 8px; }
-  .home-card p  { font-size: 13px; color: var(--text-muted); margin: 0; }
-
-  /* BACK BTN */
-  .back-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text-muted);
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 6px 14px;
-    cursor: pointer;
-    margin-bottom: 20px;
-    transition: all 0.15s;
-    text-decoration: none;
-  }
-  .back-btn:hover { color: var(--accent); border-color: var(--accent); }
-
-  /* NAV BAR */
-  .nav-bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 20px;
-    gap: 10px;
-  }
-  .nav-bar .back-btn { margin-bottom: 0; }
-  .nav-arrows { display: flex; gap: 8px; align-items: center; }
-  .nav-arrow {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text-muted);
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 6px 14px;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-  .nav-arrow:hover { color: var(--accent); border-color: var(--accent); }
-  .nav-arrow:disabled { opacity: 0.25; cursor: default; pointer-events: none; }
-  .slide-counter {
-    font-size: 11px;
-    color: var(--text-dim);
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    white-space: nowrap;
-  }
-  .bottom-nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 32px;
-    padding-top: 20px;
-    border-top: 1px solid var(--border);
-    gap: 10px;
-  }
-
-  /* MOBILE */
-  .mobile-topbar {
-    display: none;
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    padding: 12px 18px;
-    z-index: 200;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .mobile-topbar span { font-size: 13px; font-weight: 700; color: var(--accent); letter-spacing: 0.08em; }
-  .hamburger {
-    background: none;
-    border: 1px solid var(--border);
-    color: var(--text);
-    border-radius: 6px;
-    padding: 6px 10px;
-    cursor: pointer;
-    font-size: 16px;
-  }
-  .sidebar-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.6);
-    z-index: 99;
-  }
-  .sidebar-overlay.open { display: block; }
-
-  @media (max-width: 800px) {
-    .grid-2 { grid-template-columns: 1fr; }
-    .home-grid { grid-template-columns: 1fr; }
-    .main { margin-left: 0; padding: 72px 18px 24px; }
-    .sidebar { transform: translateX(-100%); transition: transform 0.25s ease; z-index: 150; }
-    .sidebar.open { transform: translateX(0); }
-    .mobile-topbar { display: flex; }
-    .back-btn { display: none; }
-  }
+  @media (prefers-reduced-motion: reduce) { .view { animation: none; } .progress i, .home-card, .sidebar { transition: none; } }
 </style>
-</head>
-<body>
 
-<!-- SIDEBAR -->
-<nav class="sidebar">
-  <div class="sidebar-logo">
-    <h1>MNG222 Guide</h1>
-    <p>Lectures 1 – 6</p>
-    <p style="margin-top:6px; font-size:11px; color:#5b8cff; font-weight:600; letter-spacing:0.05em;">Nile University</p>
-  </div>
+<div class="topbar"><span>MNG222 STUDY GUIDE</span><button class="burger" id="burger" aria-label="Open lecture menu">Menu</button></div>
+<div class="overlay" id="overlay"></div>
+<nav class="sidebar" id="sidebar" aria-label="Lectures"></nav>
+<main class="main" id="main"></main>
 
-  <a class="nav-item active" onclick="show('home')">📚 All Lectures</a>
-  <a class="nav-item" onclick="show('l1')">L1 — Intro to Manufacturing</a>
-  <a class="nav-item" onclick="show('l2')">L2 — Theory of Machining</a>
-  <a class="nav-item" onclick="show('l3')">L3 — Machining Ops 1</a>
-  <a class="nav-item" onclick="show('l4')">L4 — Machining Ops 2</a>
-  <a class="nav-item" onclick="show('l5')">L5 — Bulk Deformation</a>
-  <a class="nav-item" onclick="show('l6')">L6 — Sheet Metalworking</a>
-</nav>
-
-<!-- MOBILE TOP BAR -->
-<div class="mobile-topbar">
-  <span>MNG222 Study Guide <span style="font-size:10px; color:var(--text-muted); font-weight:400;">Nile University</span></span>
-  <button class="hamburger" onclick="toggleSidebar()">☰ Menu</button>
-</div>
-<div class="sidebar-overlay" id="overlay" onclick="toggleSidebar()"></div>
-
-<!-- MAIN CONTENT -->
-<main class="main">
-
-<!-- ===================== HOME ===================== -->
-<div id="home" class="section active">
-  <div class="section-header">
-    <div class="lecture-tag tag-l1">Study Guide</div>
-    <h2>Manufacturing Processes (MNG222)</h2>
-    <p>Click any card or use the sidebar to jump to a lecture summary.</p>
-  </div>
-  <div class="home-grid">
-    <a class="home-card" onclick="show('l1')">
-      <div class="num" style="color:var(--accent)">Lecture 1</div>
-      <h3>Intro to Manufacturing</h3>
-      <p>Production systems, material types, processing operations vs assembly.</p>
-    </a>
-    <a class="home-card" onclick="show('l2')">
-      <div class="num" style="color:var(--accent3)">Lecture 2</div>
-      <h3>Theory of Metal Machining</h3>
-      <p>Orthogonal cutting, Merchant equation, cutting forces, power &amp; energy.</p>
-    </a>
-    <a class="home-card" onclick="show('l3')">
-      <div class="num" style="color:var(--accent4)">Lecture 3</div>
-      <h3>Machining Operations 1</h3>
-      <p>Turning, milling, material removal rate (MRR), up vs down milling.</p>
-    </a>
-    <a class="home-card" onclick="show('l4')">
-      <div class="num" style="color:var(--accent2)">Lecture 4</div>
-      <h3>Machining Operations 2</h3>
-      <p>Drilling, shaping, planing, broaching, and sawing processes.</p>
-    </a>
-    <a class="home-card" onclick="show('l5')">
-      <div class="num" style="color:#b46aff">Lecture 5</div>
-      <h3>Bulk Deformation</h3>
-      <p>Rolling, forging, extrusion, wire/bar drawing, flow stress.</p>
-    </a>
-    <a class="home-card" onclick="show('l6')">
-      <div class="num" style="color:#00bcd4">Lecture 6</div>
-      <h3>Sheet Metalworking</h3>
-      <p>Cutting, bending, deep drawing, clearances, springback, die types.</p>
-    </a>
-  </div>
-</div>
-
-<!-- ===================== LECTURE 1 ===================== -->
-<div id="l1" class="section">
-  <div class="nav-bar">
-    <button class="back-btn" onclick="show('home')">⌂ Home</button>
-    <div class="nav-arrows">
-      <span class="slide-counter">1 / 6</span>
-      <button class="nav-arrow" disabled>← </button>
-      <button class="nav-arrow" onclick="show('l2')">Lecture 2 →</button>
-    </div>
-  </div>
-  <div class="section-header">
-    <div class="lecture-tag tag-l1">Lecture 1</div>
-    <h2>Intro to Manufacturing</h2>
-  </div>
-  <div class="topic-divider"><h3>💡 What is Manufacturing?</h3></div>
-  <div class="card">
-    <h3><span class="icon icon-blue">⚙️</span>Technological &amp; Economic Views</h3>
-    <p><strong>Technological:</strong> Applying physical/chemical processes to alter geometry, properties, or appearance of a starting material.</p>
-    <p><strong>Economic:</strong> Transforming materials into items of greater value via processing/assembly operations.</p>
-  </div>
-
-  <div class="topic-divider"><h3>📦 Materials &amp; Processes</h3></div>
-  <div class="card">
-    <h3><span class="icon icon-green">🧱</span>Four Material Categories</h3>
-    <ul>
-      <li><strong>Metals:</strong> Ferrous (steel, cast iron) &amp; Nonferrous (Al, Cu, Ti). Ductile, strong, conductive.</li>
-      <li><strong>Ceramics:</strong> Oxides, nitrides, carbides. Hard, brittle, insulating.</li>
-      <li><strong>Polymers:</strong> Thermoplastics, thermosets, elastomers. Light, easily shaped at low temps.</li>
-      <li><strong>Composites:</strong> Matrix + reinforcement (e.g., fiberglass).</li>
-    </ul>
-  </div>
-  
-  <div class="card">
-    <h3><span class="icon icon-yellow">🔄</span>Processing Operations <span class="badge badge-exam">EXAM</span></h3>
-    <table>
-      <tr><th>State</th><th>Process</th><th>Examples</th></tr>
-      <tr><td>Liquid</td><td>Solidification</td><td>Casting (metals), Molding (plastics)</td></tr>
-      <tr><td>Powder</td><td>Particulate</td><td>Press &amp; Sinter</td></tr>
-      <tr><td>Ductile Solid</td><td>Deformation</td><td>Rolling, Forging, Extrusion</td></tr>
-      <tr><td>Solid</td><td>Material Removal</td><td>Turning, Milling, Drilling, Grinding</td></tr>
-    </table>
-  </div>
-  <div class="bottom-nav">
-    <button class="nav-arrow" disabled>←</button>
-    <span class="slide-counter">1 / 6</span>
-    <button class="nav-arrow" onclick="show('l2')">→</button>
-  </div>
-</div>
-
-<!-- ===================== LECTURE 2 ===================== -->
-<div id="l2" class="section">
-  <div class="nav-bar">
-    <button class="back-btn" onclick="show('home')">⌂ Home</button>
-    <div class="nav-arrows">
-      <span class="slide-counter">2 / 6</span>
-      <button class="nav-arrow" onclick="show('l1')">← </button>
-      <button class="nav-arrow" onclick="show('l3')">Lecture 3 →</button>
-    </div>
-  </div>
-  <div class="section-header">
-    <div class="lecture-tag tag-l2">Lecture 2</div>
-    <h2>Theory of Metal Machining</h2>
-  </div>
-  <div class="topic-divider"><h3>📐 Orthogonal Cutting Model</h3></div>
-  <div class="card">
-    <h3><span class="icon icon-green">✂️</span>Chip Formation <span class="badge badge-exam">EXAM</span></h3>
-    <p>Orthogonal model reduces 3D cuts to 2D. The cutting edge is perpendicular to motion.</p>
-    <ul>
-      <li><strong>Chip thickness ratio (r):</strong> <code>r = t_o / t_c</code> (always &lt; 1 because chip gets thicker).</li>
-      <li><strong>Shear angle (φ):</strong> <code>tan φ = r cos α / (1 - r sin α)</code></li>
-      <li><strong>Shear strain (γ):</strong> <code>γ = tan(φ - α) + cot φ</code></li>
-    </ul>
-  </div>
-  
-  <div class="topic-divider"><h3>⚖️ Force &amp; Merchant Equation</h3></div>
-  <div class="card">
-    <h3><span class="icon icon-blue">⚖️</span>Forces in Machining</h3>
-    <p>Only <strong>Cutting Force (F_c)</strong> does work. <strong>Thrust force (F_t)</strong> causes deflection.</p>
-    <p><strong>Merchant Equation:</strong> <code>φ = 45° + α/2 - β/2</code></p>
-    <div class="tip">To get a cheaper cut (lower power), you want a <strong>larger shear angle (φ)</strong>. Achieve this by increasing rake angle (α) or reducing friction (β).</div>
-  </div>
-  
-  <div class="topic-divider"><h3>⚡ Power &amp; Energy</h3></div>
-  <div class="card">
-    <h3><span class="icon icon-yellow">⚡</span>Cutting Power</h3>
-    <pre>P_c = F_c * v
-P_g = P_c / E (Gross Power, E = efficiency)</pre>
-    <p><strong>Specific Energy (U):</strong> Energy required to remove 1 unit volume of material. <code>P_c = U * R_MR</code></p>
-    <div class="warn">As uncut chip thickness (t_o) falls, specific energy <strong>rises</strong> (Size Effect).</div>
-  </div>
-  <div class="bottom-nav">
-    <button class="nav-arrow" onclick="show('l1')">←</button>
-    <span class="slide-counter">2 / 6</span>
-    <button class="nav-arrow" onclick="show('l3')">→</button>
-  </div>
-</div>
-
-<!-- ===================== LECTURE 3 ===================== -->
-<div id="l3" class="section">
-  <div class="nav-bar">
-    <button class="back-btn" onclick="show('home')">⌂ Home</button>
-    <div class="nav-arrows">
-      <span class="slide-counter">3 / 6</span>
-      <button class="nav-arrow" onclick="show('l2')">← </button>
-      <button class="nav-arrow" onclick="show('l4')">Lecture 4 →</button>
-    </div>
-  </div>
-  <div class="section-header">
-    <div class="lecture-tag tag-l3">Lecture 3</div>
-    <h2>Machining Operations 1</h2>
-  </div>
-  <div class="topic-divider"><h3>🔄 Turning Operations</h3></div>
-  <div class="card">
-    <h3><span class="icon icon-blue">🔄</span>Turning Formulas <span class="badge badge-exam">EXAM</span></h3>
-    <p>Single-point tool removes material from a rotating workpiece.</p>
-    <table>
-      <tr><th>Parameter</th><th>Formula</th></tr>
-      <tr><td>Spindle Speed (N)</td><td><code>N = v / (π * D_o)</code></td></tr>
-      <tr><td>Feed Rate (f_r)</td><td><code>f_r = N * f</code></td></tr>
-      <tr><td>Machining Time (T_m)</td><td><code>T_m = L / f_r</code></td></tr>
-      <tr><td>Material Removal Rate (R_MR)</td><td><code>R_MR = v * f * d</code></td></tr>
-    </table>
-  </div>
-
-  <div class="topic-divider"><h3>⚙️ Milling Operations</h3></div>
-  <div class="card">
-    <h3><span class="icon icon-green">⚙️</span>Peripheral vs Face Milling</h3>
-    <ul>
-      <li><strong>Peripheral (Plain) Milling:</strong> Cutter axis is parallel to surface. Outside edges do the cutting.</li>
-      <li><strong>Face Milling:</strong> Cutter axis is perpendicular to surface. Edges on both end and periphery cut.</li>
-    </ul>
-    <p><strong>Feed Rate:</strong> <code>f_r = N * n_t * f</code> (where n_t = number of teeth)</p>
-    <div class="warn">Don't forget the <strong>approach distance (A)</strong> in milling time calculations! <code>T_m = (L + A) / f_r</code></div>
-  </div>
-  
-  <div class="card">
-    <h3><span class="icon icon-purple">⬆️</span>Up vs Down Milling</h3>
-    <p><strong>Up Milling:</strong> Teeth move against feed. Chip starts thin, grows thick. Tendency to lift work.</p>
-    <p><strong>Down (Climb) Milling:</strong> Teeth move with feed. Chip starts thick, thins out. Pushes work down (simpler fixturing, better finish).</p>
-  </div>
-  <div class="bottom-nav">
-    <button class="nav-arrow" onclick="show('l2')">←</button>
-    <span class="slide-counter">3 / 6</span>
-    <button class="nav-arrow" onclick="show('l4')">→</button>
-  </div>
-</div>
-
-<!-- ===================== LECTURE 4 ===================== -->
-<div id="l4" class="section">
-  <div class="nav-bar">
-    <button class="back-btn" onclick="show('home')">⌂ Home</button>
-    <div class="nav-arrows">
-      <span class="slide-counter">4 / 6</span>
-      <button class="nav-arrow" onclick="show('l3')">← </button>
-      <button class="nav-arrow" onclick="show('l5')">Lecture 5 →</button>
-    </div>
-  </div>
-  <div class="section-header">
-    <div class="lecture-tag tag-l4">Lecture 4</div>
-    <h2>Machining Operations 2</h2>
-  </div>
-  <div class="topic-divider"><h3>🕳️ Drilling</h3></div>
-  <div class="card">
-    <h3><span class="icon icon-red">🕳️</span>Drilling Geometry &amp; Time <span class="badge badge-exam">EXAM</span></h3>
-    <p>Uses a twist drill with 2 cutting edges &amp; helical flutes.</p>
-    <pre>A (Approach) = 0.5 * D * tan(90 - θ/2)
-Through Hole: T_m = (t + A) / f_r
-Blind Hole: T_m = (d + A) / f_r</pre>
-    <div class="tip">Drill creates an oversize/rough hole. Use <strong>reaming</strong> for tolerance (diameter) and <strong>boring</strong> for position/straightness.</div>
-  </div>
-
-  <div class="topic-divider"><h3>📏 Shaping &amp; Planing</h3></div>
-  <div class="card">
-    <h3><span class="icon icon-blue">📏</span>Linear Cutting Motions</h3>
-    <ul>
-      <li><strong>Shaping:</strong> Tool moves (ram), work feeds sideways. Used for smaller parts.</li>
-      <li><strong>Planing:</strong> Work moves (table), tool feeds across. Used for massive parts.</li>
-    </ul>
-    <p>Both use a <strong>quick return</strong> mechanism to minimize idle time on the non-cutting stroke.</p>
-  </div>
-
-  <div class="topic-divider"><h3>🪚 Broaching &amp; Sawing</h3></div>
-  <div class="card">
-    <h3><span class="icon icon-yellow">🪚</span>Broaching</h3>
-    <p>A multi-tooth tool where each tooth is slightly higher than the last. Cuts the whole profile in one linear stroke. Extremely fast but tooling is expensive.</p>
-  </div>
-  <div class="bottom-nav">
-    <button class="nav-arrow" onclick="show('l3')">←</button>
-    <span class="slide-counter">4 / 6</span>
-    <button class="nav-arrow" onclick="show('l5')">→</button>
-  </div>
-</div>
-
-<!-- ===================== LECTURE 5 ===================== -->
-<div id="l5" class="section">
-  <div class="nav-bar">
-    <button class="back-btn" onclick="show('home')">⌂ Home</button>
-    <div class="nav-arrows">
-      <span class="slide-counter">5 / 6</span>
-      <button class="nav-arrow" onclick="show('l4')">← </button>
-      <button class="nav-arrow" onclick="show('l6')">Lecture 6 →</button>
-    </div>
-  </div>
-  <div class="section-header">
-    <div class="lecture-tag tag-l5">Lecture 5</div>
-    <h2>Bulk Deformation</h2>
-  </div>
-  <div class="topic-divider"><h3>🔥 Bulk Deformation Fundamentals</h3></div>
-  <div class="card">
-    <h3><span class="icon icon-purple">🔥</span>Flow Stress &amp; Temp</h3>
-    <p><strong>Flow Stress:</strong> <code>Y_f = K * ε^n</code> (Stress needed to keep metal deforming).</p>
-    <p><strong>Temperatures:</strong></p>
-    <ul>
-      <li><strong>Cold:</strong> High force, strain hardening, good finish/tolerance.</li>
-      <li><strong>Hot:</strong> Above recrystallization temp. Low force, large shape changes, no strain hardening, scale/poor finish.</li>
-    </ul>
-  </div>
-
-  <div class="topic-divider"><h3>⚙️ Rolling</h3></div>
-  <div class="card">
-    <h3><span class="icon icon-green">⚙️</span>Flat Rolling Limits <span class="badge badge-exam">EXAM</span></h3>
-    <p>Reducing thickness between 2 opposing rolls.</p>
-    <pre>Draft (d) = t_o - t_f
-Max Draft (d_max) = μ^2 * R</pre>
-    <div class="warn">Friction (μ) limits the draft per pass. To get a bigger draft, you need larger rolls or higher friction (hot rolling).</div>
-  </div>
-
-  <div class="topic-divider"><h3>🔨 Forging &amp; Extrusion</h3></div>
-  <div class="card">
-    <h3><span class="icon icon-red">🔨</span>Forging Types</h3>
-    <ul>
-      <li><strong>Open-die:</strong> Flat dies (bulges/barrels due to friction).</li>
-      <li><strong>Impression-die:</strong> Dies contain shape. Excess metal squeezes out as <strong>flash</strong> (which helps build pressure to fill corners).</li>
-      <li><strong>Flashless:</strong> Work fully enclosed (coining). Requires exact starting volume.</li>
-    </ul>
-  </div>
-  
-  <div class="card">
-    <h3><span class="icon icon-blue">➡️</span>Extrusion</h3>
-    <p><strong>Direct:</strong> Ram pushes billet toward die. High friction because billet slides against container wall.</p>
-    <p><strong>Indirect:</strong> Die mounted on hollow ram; metal flows backward. No container friction = lower force.</p>
-  </div>
-  <div class="bottom-nav">
-    <button class="nav-arrow" onclick="show('l4')">←</button>
-    <span class="slide-counter">5 / 6</span>
-    <button class="nav-arrow" onclick="show('l6')">→</button>
-  </div>
-</div>
-
-<!-- ===================== LECTURE 6 ===================== -->
-<div id="l6" class="section">
-  <div class="nav-bar">
-    <button class="back-btn" onclick="show('home')">⌂ Home</button>
-    <div class="nav-arrows">
-      <span class="slide-counter">6 / 6</span>
-      <button class="nav-arrow" onclick="show('l5')">← </button>
-      <button class="nav-arrow" disabled>→</button>
-    </div>
-  </div>
-  <div class="section-header">
-    <div class="lecture-tag tag-l6">Lecture 6</div>
-    <h2>Sheet Metalworking</h2>
-  </div>
-  <div class="topic-divider"><h3>✂️ Sheet Metal Cutting</h3></div>
-  <div class="card">
-    <h3><span class="icon icon-cyan">✂️</span>Shearing &amp; Clearance <span class="badge badge-exam">EXAM</span></h3>
-    <p><strong>Blanking:</strong> Cut piece is the part (keep slug). <strong>Punching:</strong> Cut piece is scrap (keep sheet).</p>
-    <pre>Clearance (c) = A_c * t</pre>
-    <p><em>Sizing rule of thumb:</em> The part takes its size from the tool it is pushed against.</p>
-    <ul><li><strong>Blanking:</strong> Die = D_b, Punch = D_b - 2c</li><li><strong>Punching:</strong> Punch = D_h, Die = D_h + 2c</li></ul>
-  </div>
-
-  <div class="topic-divider"><h3>📐 Bending</h3></div>
-  <div class="card">
-    <h3><span class="icon icon-yellow">📐</span>Bend Allowance &amp; Springback</h3>
-    <p>Metal outside is stretched, inside is compressed. Neutral axis length stays same.</p>
-    <pre>BA = 2π * (α / 360) * (R + K_ba * t)</pre>
-    <p><strong>Springback:</strong> Elastic recovery opens the bend. Fix by <strong>overbending</strong> or <strong>bottoming</strong> (coining the bend).</p>
-  </div>
-
-  <div class="topic-divider"><h3>🕳️ Deep Drawing</h3></div>
-  <div class="card">
-    <h3><span class="icon icon-purple">🕳️</span>Drawing Feasibility <span class="badge badge-exam">EXAM</span></h3>
-    <p>Forming a flat blank into a hollow shape (cups, cans).</p>
-    <ul>
-      <li>Drawing Ratio <code>DR = D_b / D_p ≤ 2.0</code></li>
-      <li>Reduction <code>r = (D_b - D_p) / D_b ≤ 0.50</code></li>
-      <li>Thickness Ratio <code>t / D_b ≥ 1%</code></li>
-    </ul>
-    <div class="warn">If constraints are exceeded, the part requires <strong>redrawing</strong> steps. Too thin a blank causes <strong>wrinkling</strong>.</div>
-  </div>
-  <div class="bottom-nav">
-    <button class="nav-arrow" onclick="show('l5')">←</button>
-    <span class="slide-counter">6 / 6</span>
-    <button class="nav-arrow" disabled>→</button>
-  </div>
-</div>
-
-</main>
 <script>
-  function show(id) {
-    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-    document.querySelectorAll('.nav-item').forEach(n => {
-      if (n.getAttribute('onclick') === `show('${id}')`) n.classList.add('active');
+(function () {
+  /* ---------- Quiz question helper: Q(prompt, options, correctIndex, explanation) ---------- */
+  function Q(p, o, c, e) { return { p: p, o: o, c: c, e: e }; }
+  function ul(a) { return '<ul>' + a.map(function (x) { return '<li>' + x + '</li>'; }).join('') + '</ul>'; }
+  function tbl(h, rows) {
+    return '<div class="tablewrap"><table><thead><tr>' + h.map(function (x) { return '<th>' + x + '</th>'; }).join('') +
+      '</tr></thead><tbody>' + rows.map(function (r) { return '<tr>' + r.map(function (x) { return '<td>' + x + '</td>'; }).join('') + '</tr>'; }).join('') + '</tbody></table></div>';
+  }
+  function card(t, body) { return '<div class="card"><h3>' + t + '</h3>' + body + '</div>'; }
+  function pair(a, b) { return '<div class="grid2">' + a + b + '</div>'; }
+  function topic(t) { return '<div class="topic">' + t + '</div>'; }
+  function tip(t) { return '<div class="box tip"><strong>Exam point.</strong> ' + t + '</div>'; }
+  function warn(t) { return '<div class="box warn"><strong>Watch out.</strong> ' + t + '</div>'; }
+  function lead(t) { return '<p class="lead">' + t + '</p>'; }
+  function T(t) { return '<span class="term">' + t + '</span>'; }
+
+  var L = [];
+
+  /* ---------------- Lecture 1 ---------------- */
+  L.push({
+    id: 'l1', color: 'var(--c1)', title: 'Introduction to Manufacturing',
+    blurb: 'Definitions, industries, quantity and variety, materials, process families, production systems',
+    sub: 'Manufacturing is a technical process that alters geometry, properties or appearance, and an economic one that adds value.',
+    summary:
+      lead('Materials, processes and systems are the three building blocks of manufacturing. Everything else in the course is one of them.') +
+      topic('Why it matters and what it is') +
+      pair(
+        card('Why manufacturing matters', ul([
+          '<strong>Technologically:</strong> every technological product must be made.',
+          '<strong>Economically:</strong> it creates material wealth (about 20% of GNP in the US figures used). Services move wealth around but do not create it.',
+          '<strong>Historically:</strong> cultures better at making things did better, from interchangeable parts and the assembly line to CNC automation.'])) +
+        card('Two definitions', ul([
+          '<strong>Technologic:</strong> applying physical and chemical processes to alter the geometry, properties or appearance of a starting material, including assembly.',
+          '<strong>Economic:</strong> transforming materials into items of greater value by processing or assembly operations.',
+          'From Latin <em>manus</em> (hand) + <em>factus</em> (make).']))
+      ) +
+      warn('Production is not the same as manufacturing. Production is broader and includes extraction and cultivation ("crude oil production"). In this course manufacturing means hardware.') +
+      topic('Industries, quantity and variety') +
+      pair(
+        card('Industries and products', ul([
+          '<strong>Primary:</strong> exploit natural resources. <strong>Secondary:</strong> convert them (manufacturing). <strong>Tertiary:</strong> services.',
+          'Buyers: consumer goods, capital goods, and materials, components and supplies.',
+          '<strong>Discrete items</strong> are counted one by one. <strong>Continuous products</strong> are measured by length, volume or mass.'])) +
+        card('Quantity and variety', ul([
+          'Low: 1 to 100 units per year. Medium: 100 to 10,000. High: 10,000 and up.',
+          '<strong>Hard variety:</strong> products differ greatly, few common components. <strong>Soft variety:</strong> small differences, many common components.',
+          'High variety and high quantity do not coexist. Flexible automation and cellular manufacturing push that limit outward.']))
+      ) +
+      card('Manufacturing capability has three limits', ul([
+        'Technological processing capability (the processes available and the skills of the people).',
+        'Physical size and weight of the product.',
+        'Production capacity (the maximum rate a plant can achieve under assumed operating conditions).'])) +
+      topic('Engineering materials') +
+      tbl(['Family', 'What it is', 'Key traits'], [
+        ['Metals', 'Usually alloys. Ferrous (iron-based: steel 0.02 to 2.1% C, cast iron 2 to 4% C) or nonferrous.', 'Ductile, strong, conductive. Can be cast, deformed and machined.'],
+        ['Ceramics', 'Compounds of metallic and nonmetallic elements. Includes glasses.', 'Hard, brittle, heat-resistant, insulating. Shaped from powder or as glass.'],
+        ['Polymers', 'Long molecules of repeating mers. Thermoplastics, thermosets, elastomers.', 'Low density and stiffness. Moulded to net shape.'],
+        ['Composites', 'Nonhomogeneous mixtures of the other three.', 'Properties tailored by combination.']]) +
+      pair(
+        card('Three kinds of polymer', ul([
+          '<strong>Thermoplastic:</strong> softens on heating, can be remelted.',
+          '<strong>Thermoset:</strong> cures irreversibly, cannot be remelted.',
+          '<strong>Elastomer:</strong> large elastic extension and recovery.'])) +
+        card('Material narrows the process', ul([
+          'Cast iron is brittle, so it can be cast and machined but not forged or deep drawn.',
+          'Engineering ceramics have no plastic flow before fracture, so no forging, turning or welding.',
+          'Thermoplastics remelt, so fusion welding of a load path is ruled out.']))
+      ) +
+      topic('Manufacturing processes') +
+      tbl(['Shaping family', 'Starting state', 'Examples', 'Note'], [
+        ['Solidification', 'Liquid', 'Casting (metals), moulding (plastics)', 'Complex shapes, but porosity and poorer finish'],
+        ['Particulate processing', 'Powder', 'Press and sinter', 'Near-net shape, little waste'],
+        ['Deformation', 'Ductile solid', 'Rolling, forging, extrusion, sheet metal', 'No material removed. Ductile materials only'],
+        ['Material removal', 'Solid', 'Turning, milling, drilling, grinding', 'Most accurate, but wasteful']]) +
+      pair(
+        card('Other operations', ul([
+          '<strong>Property-enhancing:</strong> heat treatment changes properties, not shape.',
+          '<strong>Surface processing:</strong> cleaning, plating, painting, coating.',
+          '<strong>Assembly:</strong> permanent joining (welding, brazing, soldering, adhesive) or mechanical fastening (threads, rivets, press and snap fits).'])) +
+        card('Machines and tooling', ul([
+          'Machine tools perform machining, and machine tools are used to make machine tools.',
+          'Special tooling is part-specific: moulds, dies, jigs, fixtures.',
+          'Tooling cost is spread over the run, so quantity governs process selection.']))
+      ) +
+      topic('Production systems') +
+      tbl(['Quantity', 'System', 'Typical layout'], [
+        ['Low (1 to 100)', 'Job shop', 'Fixed-position or process'],
+        ['Medium (100 to 10,000)', 'Batch or cellular production', 'Process or cellular'],
+        ['High (10,000 and up)', 'Quantity or flow-line mass production', 'Cellular or product']]) +
+      pair(
+        card('Four plant layouts', ul([
+          '<strong>Fixed-position:</strong> product stays (ships, aircraft).',
+          '<strong>Process:</strong> machines grouped by type.',
+          '<strong>Cellular:</strong> cells making part families (group technology).',
+          '<strong>Product:</strong> stations in product sequence, the flow line.'])) +
+        card('Support systems and flows', ul([
+          'Support systems: manufacturing engineering, production planning and control, quality control.',
+          '<strong>Material flow</strong> runs through the facilities.',
+          '<strong>Information flow</strong> runs through the support systems.',
+          'The factory floor is where both meet.']))
+      ),
+    quiz: [
+      Q('Which statement is the technologic definition of manufacturing?', ['Transforming materials into items of greater value', 'Applying physical and chemical processes to alter the geometry, properties or appearance of a starting material, including assembly', 'Extracting and cultivating natural resources', 'Moving wealth between sectors of the economy'], 1, 'The technologic view is about altering geometry, properties or appearance. The first option is the economic definition.'),
+      Q('Why is "crude oil production" correct but "crude oil manufacturing" sounds wrong?', ['Production is the broader term and includes extraction, while manufacturing means altering a starting material', 'Oil is a continuous product, and continuous products cannot be produced', 'Manufacturing only applies to metals', 'Production only applies to services'], 0, 'Production covers extraction and cultivation as well as making. Manufacturing here means hardware.'),
+      Q('Manufacturing is the principal activity of which category of industry?', ['Primary', 'Tertiary', 'Secondary', 'Service'], 2, 'Primary industries exploit natural resources, secondary industries convert them (manufacturing), tertiary industries provide services.'),
+      Q('How are product variety and production quantity per product related in a plant?', ['Directly: more variety means more quantity', 'They are unrelated', 'Inversely: high variety usually means low quantity per product', 'Only related for continuous processes'], 2, 'High variety and high quantity do not coexist. Flexible automation and cellular manufacturing push that limit outward.'),
+      Q('Which set lists the three limits of manufacturing capability?', ['Cost, quality and delivery', 'Technological processing capability, physical size and weight of product, production capacity', 'Materials, processes and systems', 'Quantity, variety and layout'], 1, 'Materials, processes and systems are the three building blocks of manufacturing, not the capability limits.'),
+      Q('What distinguishes a thermosetting polymer from a thermoplastic?', ['It softens repeatedly on heating', 'It shows large elastic extension and recovery', 'It is always a composite', 'It cures irreversibly and cannot be remelted'], 3, 'Thermosets (phenolics, epoxies) cure once and stay rigid. Large elastic recovery describes elastomers.'),
+      Q('Which shaping family changes shape by making a ductile solid flow, with no material removed?', ['Solidification', 'Deformation', 'Particulate processing', 'Material removal'], 1, 'Deformation (rolling, forging, extrusion, sheet metal) stresses a ductile solid beyond yield so it flows.'),
+      Q('Which plant layout is based on group technology, with cells making families of similar parts?', ['Fixed-position layout', 'Process layout', 'Product layout', 'Cellular layout'], 3, 'Cellular layout cuts setup and travel for soft variety by grouping machines into part-family cells.')
+    ]
+  });
+
+  /* ---------------- Lecture 2 ---------------- */
+  L.push({
+    id: 'l2', color: 'var(--c2)', title: 'Theory of Metal Machining',
+    blurb: 'Chip formation, orthogonal model, forces, Merchant equation, power, cutting temperature',
+    sub: 'Machining is a shear process. The chip, forces, power and heat all follow from that.',
+    summary:
+      lead('The tool shears the work material along a shear plane. Chip ratio, shear angle, forces, energy and temperature all follow from that one fact.') +
+      topic('Machining overview') +
+      pair(
+        card('Advantages', ul(['Works on a variety of materials and geometries.', 'Dimensional accuracy (about &plusmn;0.025 mm) and the best surface finish of the shaping families.'])) +
+        card('Disadvantages', ul(['Wasteful of material: the chip is scrap.', 'Time consuming, and normally done late in the sequence, so a scrapped part is expensive.']))
+      ) +
+      card('Principal operations', ul([
+        '<strong>Turning:</strong> single-point tool, work rotates.',
+        '<strong>Drilling:</strong> two cutting edges, tool rotates and feeds.',
+        '<strong>Milling:</strong> multi-tooth cutter, tool rotates while the work feeds past.',
+        'Others: shaping, planing, broaching, sawing, boring, grinding.'])) +
+      pair(
+        card('What a cutting tool needs', ul(['<strong>Hardness</strong>, including hot hardness, which limits cutting speed.', '<strong>Toughness</strong>, because the edge is impact loaded.', '<strong>Wear resistance.</strong>', 'Hardness and toughness pull in opposite directions.'])) +
+        card('Tool geometry', ul(['<strong>Rake face:</strong> chip flows over it (rake angle).', '<strong>Flank face:</strong> clearance (relief angle).', '<strong>Cutting edge:</strong> where they meet.', 'Positive rake: freer cut, less force. Negative rake: stronger edge, more force.']))
+      ) +
+      topic('Cutting conditions') +
+      tbl(['Parameter', 'Meaning', 'Main effect'], [
+        ['Speed (v)', 'Rate at which the edge passes over the work', 'Governs temperature and tool life most strongly'],
+        ['Feed (f)', 'Step of the secondary motion per revolution or tooth', 'Dominates surface roughness'],
+        ['Depth (d)', 'Thickness of layer removed', 'Cheapest way to raise removal rate']]) +
+      tbl(['', 'Roughing', 'Finishing'], [
+        ['Purpose', 'Remove bulk fast', 'Final size and surface finish'],
+        ['Feed and depth', 'High', 'Low'],
+        ['Speed', 'Lower (power-limited)', 'Higher'],
+        ['Limited by', 'Power, rigidity, work holding', 'Tolerance, roughness, nose radius']]) +
+      pair(
+        card('Coolants', '<p>Water-based. Carry heat away. Most effective at <strong>high speeds</strong>. Reduce thermal distortion and extend tool life.</p>') +
+        card('Lubricants', '<p>Oil-based. Reduce friction. Most effective at <strong>low speeds</strong>. Reduce force, power and built-up edge.</p>')
+      ) +
+      topic('Chip formation (orthogonal model)') +
+      card('Orthogonal cutting model', ul([
+        'Idealises the cut as two-dimensional, with a straight edge perpendicular to the motion. Real machining is oblique, but the model is useful.',
+        'In turning, <strong>feed becomes uncut chip thickness</strong> and <strong>depth becomes width of cut</strong>.',
+        '<strong>Chip ratio</strong> r = t&#8320; / t<sub>c</sub> is always below 1, because the chip is thicker than the layer entering. It is measurable, and it unlocks the shear angle and strain.',
+        'A larger r means a larger shear angle, a thinner chip and less energy per unit volume.',
+        'Shear strain is very large (about 200 to 400%). The metal survives because of high compressive stress in the cut.'])) +
+      tbl(['Chip type', 'Conditions', 'Result'], [
+        ['Discontinuous', 'Brittle work, low speed, large feed', 'Fractured segments, irregular finish'],
+        ['Continuous', 'Ductile, high speed, small feed, sharp tool', 'Smooth ribbon, good finish, long chips'],
+        ['With built-up edge', 'Ductile, low to medium speed', 'Work welds to the rake face, poor finish'],
+        ['Serrated', 'Titanium and nickel alloys at high speed', 'Saw-tooth, cyclic shear localisation']]) +
+      tip('Remedies for built-up edge: raise the speed, raise the rake angle, use a lubricant, keep the edge sharp and coated.') +
+      topic('Forces and the Merchant equation') +
+      pair(
+        card('Forces on the chip', ul(['Shear plane: shear force and normal force.', 'Rake face: friction force and normal force.', 'The two resultants are equal and opposite.', 'The Merchant circle shows all pairs are projections of one resultant.'])) +
+        card('What can be measured', ul(['<strong>Cutting force</strong> acts along the cutting speed and consumes the power.', '<strong>Thrust force</strong> is perpendicular, does no work, but causes deflection and chatter.', 'Both are read with a dynamometer.']))
+      ) +
+      card('Merchant equation (minimum energy)', ul([
+        'Larger rake angle: shear angle rises, chip thins, force falls.',
+        'Lower friction (lubricant): shear angle rises.',
+        'Negative rake: shear angle falls, stronger edge, more force.',
+        '<strong>Limits:</strong> the shear zone is not a plane, shear stress is not constant, and friction is partly sticking. Measured shear angles are lower than predicted, but the trends are right.',
+        'Friction coefficient in machining is unusually high (0.5 to 1.0 or more).'])) +
+      topic('Power, energy and temperature') +
+      pair(
+        card('Power and energy', ul(['Only the cutting force does work.', '<strong>Gross power</strong> = cutting power divided by machine efficiency.', '<strong>Specific energy</strong> is a material property, tabulated once and reused.', '<strong>Size effect:</strong> specific energy rises as chip thickness falls. A dull tool adds about 25%.', 'A machine can be power-limited rather than speed-limited.'])) +
+        card('Heat in the cut', ul(['Sources: primary shear zone and secondary friction zone.', 'About <strong>80% into the chip</strong>, 10% into the tool, 10% into the work.', 'Cook\'s equation: speed enters to the one-third power. <strong>Depth of cut does not appear.</strong>', 'Low diffusivity metals (titanium, stainless) run hot.']))
+      ) +
+      tbl(['Raise this', 'Removal rate', 'Force', 'Temperature', 'Catch'], [
+        ['Speed', 'Up', 'About unchanged', 'Up', 'Tool life collapses'],
+        ['Feed', 'Up', 'Up', 'Up weakly', 'Roughness worsens'],
+        ['Depth', 'Up', 'Up', 'About unchanged', 'Machine or fixture may flex'],
+        ['Rake angle', 'Unchanged', 'Down', 'Down', 'Edge gets weaker']]),
+    quiz: [
+      Q('Why is the chip thickness ratio always less than 1?', ['The chip is thicker than the uncut layer because the metal is sheared and stacked at an angle', 'The chip is thinner because material is lost as heat', 'The tool compresses the chip', 'The rake angle is always positive'], 0, 'The chip ends up shorter and thicker than the layer that entered, so the ratio is below 1.'),
+      Q('Which force component consumes the cutting power?', ['Thrust force', 'Normal force to shear', 'Cutting force', 'Friction force'], 2, 'The cutting force acts along the cutting speed. The thrust force is perpendicular and does no work.'),
+      Q('According to the Merchant equation, increasing the rake angle (all else equal) will:', ['Decrease the shear angle', 'Have no effect on the shear angle', 'Thicken the chip', 'Increase the shear angle, giving a thinner chip and lower force'], 3, 'A larger rake angle or lower friction raises the shear angle. A negative rake lowers it.'),
+      Q('Which is an effective remedy for a built-up edge?', ['Reduce the cutting speed', 'Increase the cutting speed', 'Use a dull tool', 'Use a negative rake only'], 1, 'Above a critical speed the interface is hot enough that the deposit no longer forms. Larger rake, lubricant and a sharp coated edge also help.'),
+      Q('Roughly where does most of the heat of cutting go?', ['Into the tool', 'Into the work', 'Into the chip', 'Into the coolant'], 2, 'About 80% goes into the chip, about 10% into the tool and about 10% into the work.'),
+      Q('Which variable does NOT appear in Cook\'s equation for interface temperature rise?', ['Depth of cut', 'Cutting speed', 'Specific energy', 'Thermal diffusivity'], 0, 'A wider cut adds heat but also more edge to dissipate it, so interface temperature barely changes.'),
+      Q('The size effect in machining means that:', ['Larger machines are more efficient', 'Specific energy rises as the uncut chip thickness falls', 'Specific energy falls as the chip gets thinner', 'Tool life rises with chip thickness'], 1, 'Ploughing, flank friction and surface energy do not scale with volume, so thin cuts cost more energy per unit volume.'),
+      Q('Cutting fluids acting as lubricants are most effective at:', ['Low cutting speeds', 'High cutting speeds', 'Any speed equally', 'Only in drilling'], 0, 'At low speed there is time for oil to penetrate the interface. Water-based coolants work best at high speed.'),
+      Q('Why do carbide and ceramic inserts often use a negative rake?', ['It lowers cutting force', 'It increases the shear angle', 'It makes the chip thinner', 'It puts the brittle edge in compression, where it is strong'], 3, 'The price is 20 to 40% more cutting force and power, which a rigid CNC machine can supply.'),
+      Q('Which chip type forms when machining brittle materials such as grey cast iron?', ['Continuous', 'Continuous with built-up edge', 'Serrated', 'Discontinuous'], 3, 'Brittle work fractures into segments. It is not a fault; it is normal for cast iron.')
+    ]
+  });
+
+  /* ---------------- Lecture 3 ---------------- */
+  L.push({
+    id: 'l3', color: 'var(--c3)', title: 'Turning and Milling',
+    blurb: 'Part geometry, generating vs forming, lathes, work holding, milling types, machining centres',
+    sub: 'The part geometry chooses the operation, and the operation chooses the machine.',
+    summary:
+      lead('Rotational parts are turned. Prismatic parts are milled and drilled. Surfaces are generated by the feed path, formed by the tool shape, or both.') +
+      topic('Part geometry') +
+      pair(
+        card('Rotational parts', '<p>Cylindrical or disc-like (shafts, pins, bushings, pulleys). The <strong>work rotates</strong> while a single-point tool generates the surface. Made by turning and boring.</p>') +
+        card('Prismatic parts', '<p>Block or plate-like (housings, brackets, die blocks). The <strong>tool rotates</strong> and the work moves linearly. Made by milling, drilling, shaping and planing.</p>')
+      ) +
+      tbl(['Principle', 'Geometry comes from', 'Examples'], [
+        ['Generating', 'The feed path of the tool', 'Straight, taper and contour turning, plain and profile milling'],
+        ['Forming', 'The shape of the tool', 'Form turning, drilling, broaching'],
+        ['Combined', 'Both', 'Thread cutting, slot milling']]) +
+      topic('Turning and the lathe') +
+      card('Operations related to turning', ul([
+        '<strong>Facing:</strong> radial feed, flat end surface. Length of cut is the radius, and speed falls to zero at the centre.',
+        '<strong>Taper turning</strong> (feed at an angle), <strong>contour turning</strong> (non-straight path, usually CNC), <strong>form turning</strong> (shaped tool plunged radially).',
+        '<strong>Chamfering</strong>, <strong>cut-off</strong> (parting), <strong>threading</strong> (feed equals the pitch), <strong>knurling</strong> (forming, not cutting).',
+        '<strong>Boring</strong> (internal turning) and <strong>drilling</strong> on a lathe (the work rotates, not the drill).'])) +
+      pair(
+        card('Engine lathe parts', ul(['<strong>Headstock:</strong> drive and spindle.', '<strong>Tailstock:</strong> supports the far end, carries centre, drill or reamer.', '<strong>Carriage and cross-slide:</strong> carry the tool post.', '<strong>Feed rod</strong> for turning feed, <strong>leadscrew</strong> for threading.', 'Sized by swing and distance between centres.'])) +
+        card('Holding the work', ul(['<strong>Between centres:</strong> long parts.', '<strong>Chuck:</strong> three-jaw self-centring, four-jaw independent.', '<strong>Collet:</strong> bar stock, accurate concentricity.', '<strong>Face plate:</strong> castings and irregular shapes.']))
+      ) +
+      tbl(['Quantity', 'Lathe choice'], [
+        ['Low', 'Engine, toolroom or CNC lathe, skilled operator'],
+        ['Medium', 'Turret lathe, chucking machine, CNC turning centre'],
+        ['High', 'Bar machine, automatic screw machine, dedicated tooling']]) +
+      card('Other turning machines', ul([
+        '<strong>Toolroom lathe:</strong> smaller, more accurate engine lathe. <strong>Speed lathe:</strong> high speed, hand-held tool.',
+        '<strong>Turret lathe:</strong> turret holds several tools. <strong>Chucking machine:</strong> chuck, no tailstock. <strong>Bar machine:</strong> collet, bar fed through the headstock.',
+        '<strong>Vertical boring mill:</strong> large heavy work on a horizontal rotating table.'])) +
+      topic('Milling') +
+      card('What defines milling', ul([
+        'Work is fed past a rotating cutter with multiple teeth. The axis is perpendicular to the feed.',
+        '<strong>Interrupted cut:</strong> each tooth sees impact and thermal shock every revolution, so tools must be tough.',
+        'Chip thickness varies, so feed is specified <strong>per tooth</strong> (chip load).',
+        'The principal operation for prismatic parts.'])) +
+      pair(
+        card('Peripheral (plain) milling', '<p>Axis parallel to the surface. The periphery cuts. Types: slab milling, slotting, side milling, straddle milling, form milling.</p>') +
+        card('Face milling', '<p>Axis perpendicular to the surface. End and periphery both cut. Types: conventional, partial, end milling, profile, pocket, surface contouring.</p>')
+      ) +
+      tbl(['', 'Up (conventional) milling', 'Down (climb) milling'], [
+        ['Teeth move', 'Against the feed', 'With the feed'],
+        ['Chip', 'Starts thin, grows thicker', 'Starts thick, thins out'],
+        ['Force on work', 'Tends to lift it off the table', 'Presses it onto the table'],
+        ['Tool life and finish', 'Shorter life, poorer finish', 'Longer life, better finish'],
+        ['Best for', 'Scale and hard skin on castings', 'Rigid, backlash-free machines']]) +
+      tip('In the spindle speed relation, D is whatever rotates: the work in turning, the cutter in milling. Milling time must include the approach distance.') +
+      topic('Machining and turning centres') +
+      tbl(['Machine', 'Description'], [
+        ['Machining centre', 'CNC machine for prismatic parts. Mills, drills, bores and taps in one set-up. Tool changer and magazine, pallet shuttle, automatic positioning.'],
+        ['Turning centre', 'CNC lathe with multi-tool turret, automatic tool changing, often probing.'],
+        ['Mill-turn centre', 'Turning centre with rotating tools and an indexable spindle: flats, holes and slots on a turned part without moving it.']]) +
+      card('What CNC turning centres can do', ul(['Gage the work part.', 'Monitor tools for wear.', 'Change worn tools automatically.', 'Change work parts automatically at the end of the cycle.'])),
+    quiz: [
+      Q('Which pair correctly matches part type and main process?', ['Prismatic part: turning', 'Rotational part: milling', 'Rotational part: turning', 'Prismatic part: knurling'], 2, 'Rotational parts are turned and bored. Prismatic parts are milled, drilled, shaped or planed.'),
+      Q('Which operation creates its geometry by the shape of the tool (forming) rather than the feed path?', ['Straight turning', 'Form turning', 'Contour turning', 'Plain milling'], 1, 'In form turning the tool profile is plunged radially and imparted to the work.'),
+      Q('In facing on a lathe, what happens as the tool approaches the centre?', ['Cutting speed rises', 'Cutting speed stays constant', 'Feed stops', 'Cutting speed falls toward zero at constant spindle speed'], 3, 'Surface speed depends on diameter, so it drops toward zero at the axis. The length of cut is the radius.'),
+      Q('Which lathe component provides the precise drive used for threading?', ['Feed rod', 'Tailstock', 'Leadscrew', 'Cross-slide'], 2, 'The feed rod drives the carriage for turning feed. The leadscrew is used for threading.'),
+      Q('Which work-holding method is best for bar stock needing accurate concentricity?', ['Collet', 'Face plate', 'Between centres', 'Four-jaw chuck'], 0, 'A collet squeezes the work uniformly. Face plates suit irregular castings and centres suit long parts.'),
+      Q('Why must milling cutters be tough?', ['The cut is continuous and smooth', 'Chips are always thick', 'Cutting speed is zero at the axis', 'Milling is an interrupted cut, so each tooth sees impact and thermal shock every revolution'], 3, 'Each tooth enters and leaves the work once per revolution.'),
+      Q('Which statement about up (conventional) milling is correct?', ['The chip starts thin and grows thicker, and it tolerates scale and hard skin on castings', 'The cutting force presses the work onto the table', 'It gives longer tool life and better finish than down milling', 'The chip starts thick and thins out'], 0, 'Down milling has the thick-to-thin chip, better life and finish, and needs a rigid backlash-free drive.'),
+      Q('In milling, the diameter used to relate spindle speed to cutting speed is:', ['The workpiece diameter', 'The cutter\'s outside diameter', 'The arbor diameter', 'The width of cut'], 1, 'It is the diameter of whatever rotates: the work in turning, the cutter in milling.'),
+      Q('What is the key capability of a mill-turn centre?', ['It only turns diameters at high speed', 'It has no tool changer', 'It is limited to prismatic parts', 'Rotating tools and an indexable spindle let it cut flats, holes and slots on a turned part without moving it'], 3, 'This is the done-in-one approach: fewer set-ups and better accuracy.')
+    ]
+  });
+
+  /* ---------------- Lecture 4 ---------------- */
+  L.push({
+    id: 'l4', color: 'var(--c4)', title: 'Drilling, Shaping, Broaching and Sawing',
+    blurb: 'Twist drills, drill presses, jigs and fixtures, shaping and planing, broaching, sawing',
+    sub: 'The same speed, feed and time logic applied to holes and to straight-line cutting motions.',
+    summary:
+      lead('Drilling is the most common machining operation by count and the least forgiving of chip evacuation. Shaping, planing, broaching and sawing use a straight-line cutting motion.') +
+      topic('Drilling') +
+      pair(
+        card('The twist drill', ul(['Two cutting edges on a conical point, typically 118&deg; included angle.', 'Two helical flutes give rake and carry chips out.', '<strong>Chisel edge</strong> pushes metal aside and causes most of the thrust force.', 'Cutting speed is zero at the axis and maximum at the outside diameter, so it is quoted at D.'])) +
+        card('Through and blind holes', ul(['<strong>Through hole:</strong> the drill exits the far side.', '<strong>Blind hole:</strong> the drill does not exit. The bottom carries the cone of the drill point.', 'Normally the tool rotates and feeds. On a lathe the work rotates instead.']))
+      ) +
+      tbl(['Problem', 'Why it happens', 'Remedy'], [
+        ['Chip removal', 'Chips travel back up the flutes against the incoming tool', 'Peck drilling (periodic retraction)'],
+        ['Heat', 'Enclosed cut, fluid struggles to reach the edges', 'Coolant-fed drills'],
+        ['Accuracy', 'Slender drill deflects, chisel edge walks, hole slightly oversize', 'Centre drill first, then ream or bore']]) +
+      card('Operations related to drilling', ul(['Reaming, tapping, counterboring, countersinking, centre drilling, spot facing.', '<strong>Ream</strong> to fix diameter size and finish (follows the existing axis).', '<strong>Bore</strong> to fix position and straightness (generates the hole).'])) +
+      tip('Choose by what the drawing controls: tolerance on diameter calls for reaming, tolerance on position calls for boring.') +
+      topic('Drill presses and work holding') +
+      tbl(['Drill press', 'Feature'], [
+        ['Upright', 'Standard floor-standing general-purpose machine'],
+        ['Bench', 'Smaller upright on a bench, small holes in small parts'],
+        ['Radial', 'Swinging arm and traversing head, large parts without repositioning'],
+        ['Gang', 'Two to six uprights on one table, one operation each in sequence'],
+        ['Multiple-spindle', 'Several spindles drill many holes at once, high production'],
+        ['NC drill press', 'Programmed table positioning, often a tool turret']]) +
+      tbl(['Device', 'What it does', 'Use'], [
+        ['Vise', 'General-purpose clamp, holes located by marking out', 'One-offs, low quantity'],
+        ['Fixture', 'Custom device that locates and clamps a part', 'All machining'],
+        ['Jig', 'Fixture that also guides the tool with hardened drill bushings', 'Repetitive drilling']]) +
+      topic('Shaping, planing, broaching, sawing') +
+      pair(
+        card('Shaping', '<p>The <strong>tool moves</strong> on a ram and the work is fed sideways at the end of each return stroke. Horizontal or vertical shaper. A vertical shaper (slotter) cuts internal keyways and splines.</p>') +
+        card('Planing', '<p>The <strong>work moves</strong> on a long table and the tool is fed across. Open-side or double-column planer for very large parts, with several tool heads cutting in one stroke.</p>')
+      ) +
+      card('Shaper and planer characteristics', ul(['Quick-return mechanism shortens idle time.', 'Cheap, simple tooling.', 'Low productivity, because of inertia and because half the cycle cuts nothing. Milling has replaced both for most production.', 'Shapes: V grooves, square grooves, T-slots, dovetail slots, gear teeth.'])) +
+      pair(
+        card('Broaching', ul(['A multiple-tooth tool (the broach) moves linearly along its axis.', 'Teeth rise in height, so the whole profile is cut in one stroke.', '<strong>External:</strong> outside surfaces. <strong>Internal:</strong> holes, keyways, splines.', 'Fast and accurate, but the tool is expensive and dedicated.'])) +
+        card('Sawing', ul(['A narrow slit is cut by a row of narrowly spaced teeth.', 'Normally a cut-off operation.', 'Types: power hacksaw, bandsaw (vertical), circular saw.']))
+      ) +
+      card('High-speed machining and choosing the operation', ul(['High-speed machining demands a stiff, powerful machine with fast spindle and feed drives.', 'Pick from geometry, quantity and tolerance: turning and boring (rotational), milling (prismatic), drilling (holes), broaching (dedicated high-volume profiles), sawing (cut-off).'])),
+    quiz: [
+      Q('What is the main source of thrust force in a twist drill?', ['The helical flutes', 'The outer corners of the cutting edges', 'The chisel edge, which pushes metal aside rather than cutting', 'The coolant hole'], 2, 'The chisel edge at the centre has negative rake and does not cut cleanly.'),
+      Q('Where is the cutting speed of a drill greatest?', ['At the outside diameter', 'At the chisel edge', 'At the axis', 'It is uniform along the edge'], 0, 'Speed is zero at the axis and maximum at the outside diameter, so it is quoted at D.'),
+      Q('Peck drilling is used mainly to:', ['Raise the drill\'s hardness', 'Increase hole diameter', 'Reduce thrust force at the chisel edge', 'Evacuate chips and cool the cut by periodically retracting the drill'], 3, 'Chips pack in the flutes as the hole deepens, so the drill is retracted periodically.'),
+      Q('A drawing controls the POSITION of a drilled hole tightly. What follows drilling?', ['Boring, because it corrects location and straightness', 'Reaming, because it corrects position', 'Countersinking', 'Spot facing'], 0, 'Reaming improves size and finish but follows the existing axis. Boring generates the hole.'),
+      Q('What distinguishes a jig from a fixture?', ['A jig is used only on lathes', 'A jig also guides the tool, with hardened drill bushings', 'A fixture guides the tool, a jig does not', 'A jig is a general-purpose clamp'], 1, 'Both locate and clamp the part. A jig adds tool guidance so holes need no marking out.'),
+      Q('In planing, what moves?', ['The tool moves on a ram while the work stays fixed', 'Neither; the cutter rotates', 'The work moves on a long table past a stationary tool, which is fed across', 'The tool rotates'], 2, 'Planing exchanges the motions of shaping and handles very large flat surfaces.'),
+      Q('Why can a broach cut a whole profile in one stroke?', ['It rotates at very high speed', 'It has a single sharp tooth', 'It is fed sideways across the work', 'Its teeth rise progressively in height along the tool'], 3, 'Each tooth takes a small increment, so the profile is finished in one pass. The tool is expensive and dedicated.'),
+      Q('Sawing is normally used for:', ['Cut-off operations, separating a part or removing a portion', 'Producing the best surface finish', 'Cutting internal threads', 'Finishing hardened steel'], 0, 'A narrow slit is cut by a row of small teeth: power hacksaw, bandsaw or circular saw.'),
+      Q('Why has milling replaced shaping and planing for most production?', ['Shapers cannot cut flat surfaces', 'Shaping tools are expensive', 'Reciprocating machines are limited by inertia and half of each cycle cuts nothing', 'Planers cannot machine cast iron'], 2, 'Shaping and planing are low productivity, though their tooling is cheap and simple.')
+    ]
+  });
+
+  /* ---------------- Lecture 5 ---------------- */
+  L.push({
+    id: 'l5', color: 'var(--c5)', title: 'Bulk Deformation',
+    blurb: 'Flow stress, cold and hot working, rolling, forging, extrusion, wire and bar drawing',
+    sub: 'Metal is made to flow plastically under a die. Volume is conserved and the metal often comes out stronger.',
+    summary:
+      lead('Every force calculation starts from the flow curve. The die applies stress above yield but below fracture, so the metal needs low yield strength and high ductility.') +
+      topic('Fundamentals of metal forming') +
+      pair(
+        card('Bulk vs sheet', ul(['<strong>Bulk:</strong> low surface-area-to-volume ratio, large shape changes, usually compressive (rolling, forging, extrusion, drawing).', '<strong>Sheet:</strong> high ratio, thin stock, punch and die.', 'Drawing is tensile; some sheet operations shear.'])) +
+        card('The flow curve', ul(['Flow stress is the stress needed to keep the metal deforming, as a function of true strain.', 'The strain hardening exponent says how fast the metal strengthens as it is worked.', '<strong>Average flow stress</strong> for rolling, extrusion and drawing. <strong>Final flow stress</strong> for forging at a given height.']))
+      ) +
+      tbl(['', 'Cold', 'Warm', 'Hot'], [
+        ['Temperature', 'Room temperature', 'About 0.3 to 0.5 of melting point', 'About 0.5 to 0.75 of melting point'],
+        ['Pros', 'Accuracy, finish, strength from strain hardening', 'Lower force than cold, complex shapes', 'Large changes at lowest force, isotropic, breaks down cast structure'],
+        ['Cons', 'High force, limited ductility', 'Some heating cost', 'Poor tolerance and finish, scale, shorter tool life']]) +
+      pair(
+        card('Recrystallisation', '<p>The dividing line is about <strong>half the melting temperature in kelvin</strong>. Above it new grains form continuously, so strain hardening disappears and the metal behaves as perfectly plastic.</p>') +
+        card('Strain rate and friction', ul(['Hot: a faster stroke raises flow stress. Cold: speed hardly matters.', 'Heat lowers flow stress, speed raises it.', 'Friction raises force, retards flow and wears tooling.', 'Lubricants: oils and soaps when cold, graphite and molten glass when hot.']))
+      ) +
+      topic('Rolling') +
+      card('Rolling and its products', ul([
+        'Compresses the work between two opposing rolls to reduce thickness.',
+        '<strong>Bloom</strong> (large square) rolls into structural shapes and rails. <strong>Slab</strong> into plate, sheet, strip. <strong>Billet</strong> (small square) into bars, rods and wire stock.',
+        '<strong>Hot rolling</strong> breaks down cast structure but leaves scale. <strong>Cold rolling</strong> gives strength, tolerance and finish at higher force.',
+        'Friction both costs force and <strong>pulls the work in</strong>. It also limits the draft per pass.',
+        'No-slip point: the work moves at roll speed there, and friction reverses either side.'])) +
+      pair(
+        card('Mills', ul(['Two-high, three-high, four-high, cluster, tandem.', 'Small work rolls cut contact length and force but deflect, so backing rolls support them.'])) +
+        card('Variations', ul(['Shape rolling, ring rolling, roll piercing.', 'Thread rolling: cold, no chips, stronger threads because grain flow follows the profile.']))
+      ) +
+      topic('Forging') +
+      tbl(['Type', 'Dies', 'Use'], [
+        ['Open-die', 'Flat dies, metal flows freely', 'Upsetting, shafts, blanks, low quantity'],
+        ['Impression-die', 'Dies contain the shape, excess escapes as flash', 'Connecting rods, crankshafts, medium to high volume'],
+        ['Flashless', 'Work fully enclosed, exact starting volume', 'Coining, precision forging']]) +
+      pair(
+        card('Flash and barrelling', ul(['Flash thins and cools in the gap, resists flow, and builds pressure that fills the cavity. It is trimmed off.', '<strong>Barrelling:</strong> friction holds back the ends and the middle bulges. Hot dies chill the ends and worsen it.', 'Forging force is maximum at the end of the stroke.'])) +
+        card('Forged vs machined from solid', ul(['Pros: higher rate, material conserved, grain flow gives strength and toughness.', 'Cons: expensive dies, tolerance and finish need machining, flash waste, hot scale.']))
+      ) +
+      tbl(['Equipment', 'Character'], [
+        ['Hammers', 'Impact loading, high strain rate, noisy'],
+        ['Mechanical press', 'Fixed stroke, fast, force peaks at bottom dead centre'],
+        ['Hydraulic press', 'Full force anywhere in the stroke, slow, large parts'],
+        ['Screw press', 'Energy-limited like a hammer, delivered as a stroke']]) +
+      topic('Extrusion and drawing') +
+      pair(
+        card('Direct extrusion', ul(['Ram pushes the billet toward the die.', 'Billet slides along the container, so friction adds to the force.', 'A butt is left at the end.', '<strong>Pressure is highest at the start of the stroke.</strong>'])) +
+        card('Indirect extrusion', ul(['Die on a hollow ram, metal flows back through it.', 'No billet to container motion, so lower force.', 'Hollow ram limits support and product length.']))
+      ) +
+      card('Die angle and defects', ul([
+        'Small die angle: long contact and more friction. Large angle: turbulent flow and redundant work. Force is minimum at an optimum angle.',
+        '<strong>Centre burst:</strong> internal chevron cracks from tensile stress at the centreline.',
+        '<strong>Piping:</strong> sink hole at the billet end, reduced by a dummy block slightly smaller than the billet.',
+        '<strong>Surface cracking:</strong> excess speed or friction. Lower speed or billet temperature.'])) +
+      pair(
+        card('Bar vs wire drawing', ul(['<strong>Bar:</strong> large diameters, one die, draw bench, one bar at a time.', '<strong>Wire:</strong> small diameters from coils, many dies in series, capstans.', 'Usually cold: close tolerance, good finish, strain-hardened strength.'])) +
+        card('Limit on reduction', ul(['Draw stress must stay below the yield strength of the metal leaving the die, or the wire breaks.', 'Ideal limit about 63%.', 'Practical: about 50% for bar, about 30% per die for wire.']))
+      ) +
+      tbl(['', 'Rolling', 'Forging', 'Extrusion', 'Drawing'], [
+        ['Stress', 'Compressive', 'Compressive', 'Compressive', 'Tensile pull'],
+        ['Product', 'Plate, sheet, bars, sections', 'Discrete strong parts', 'Long constant profiles', 'Wire, bar, tube to size'],
+        ['Limit', 'Friction limits draft', 'Press capacity, die fill', 'Ram pressure, defects', 'Strength of drawn product']]),
+    quiz: [
+      Q('Hot working takes place above roughly what temperature?', ['Room temperature', '0.1 of the melting temperature', 'About 0.5 of the melting temperature (kelvin), the recrystallisation temperature', 'The melting temperature'], 2, 'Above this, new grains form continuously and strain hardening disappears.'),
+      Q('Which is a true advantage of cold working over hot working?', ['Lower forces', 'No tool wear', 'Better accuracy and surface finish, plus higher strength from strain hardening', 'Larger shape changes in one step'], 2, 'Cold working needs higher force and has limited ductility, but gives better tolerance and strength.'),
+      Q('For hot working, what is the effect of a faster strain rate?', ['Flow stress rises, so a faster stroke needs more force', 'Flow stress falls', 'No effect', 'The metal strain hardens less'], 0, 'Temperature and strain rate pull in opposite directions: heat lowers flow stress, speed raises it.'),
+      Q('In rolling, friction is:', ['Harmful only, and should be zero', 'Irrelevant', 'Only important in cold rolling', 'Both a cost and a necessity: it raises force, but it also drags the work into the roll gap'], 3, 'If friction were zero, rolling would be impossible. It also limits the maximum draft per pass.'),
+      Q('Why are backing rolls used with small work rolls?', ['Small rolls reduce contact length and force, but they deflect, so backing rolls support them', 'Small rolls increase roll force', 'They increase friction', 'They cool the strip'], 0, 'This is the reasoning behind four-high and cluster mills.'),
+      Q('What is the role of flash in impression-die forging?', ['It lubricates the die', 'It builds pressure in the narrow gap that forces metal into every corner of the cavity', 'It reduces the forging force', 'It prevents barrelling'], 1, 'Flash thins and cools in the gap, resists flow, and is trimmed off afterwards.'),
+      Q('What causes barrelling in open-die upsetting?', ['Too low a flow stress', 'Excess lubricant', 'Tensile stress in the centre', 'Friction at the die faces holding back the ends'], 3, 'Hot dies chill the ends and make barrelling worse.'),
+      Q('In direct extrusion, when is ram pressure highest?', ['At the start of the stroke, when the billet is longest and container friction is greatest', 'At the end of the stroke', 'Constant throughout', 'Only in indirect extrusion'], 0, 'In forging, by contrast, force peaks at the end of the stroke.'),
+      Q('Piping in direct extrusion is reduced by using:', ['A larger die angle', 'A higher billet temperature', 'A dummy block slightly smaller than the billet', 'A smaller extrusion ratio'], 2, 'Piping is a sink hole at the billet end. Centre burst, by contrast, is internal chevron cracking.'),
+      Q('Why is the reduction per drawing pass limited?', ['The die would melt', 'The draw stress must stay below the yield strength of the metal leaving the die, or the wire breaks', 'Compressive stress causes cracking', 'Drawing is always hot'], 1, 'The ideal limit is about 63%. Friction and redundant work lower the practical limit.')
+    ]
+  });
+
+  /* ---------------- Lecture 6 ---------------- */
+  L.push({
+    id: 'l6', color: 'var(--c6)', title: 'Sheet Metalworking',
+    blurb: 'Shearing and clearance, bending and springback, cup drawing, other forming, dies and presses',
+    sub: 'Cutting and forming thin stock with a punch and die, almost always cold.',
+    summary:
+      lead('Sheet is typically 0.4 to 6 mm thick. Plate is thicker than about 6 mm. Unit cost is very low in mass production once the expensive dies are paid for.') +
+      topic('Overview and cutting') +
+      pair(
+        card('Three categories', ul(['<strong>Cutting:</strong> shearing between two sharp edges.', '<strong>Bending:</strong> straining around a straight axis, with little thickness change.', '<strong>Drawing:</strong> flat sheet into a hollow shape.', 'All use a punch and die in a press. The combination is a stamping die and the parts are stampings.'])) +
+        card('Why sheet metal', ul(['High strength and stiffness for the weight, raised by cold work.', 'Good accuracy and surface finish.', 'Very low unit cost at volume.']))
+      ) +
+      card('Four stages of shearing', ul(['<strong>Contact:</strong> punch touches the sheet.', '<strong>Plastic deformation:</strong> metal is pushed down and rounded (rollover).', '<strong>Penetration:</strong> smooth burnished band.', '<strong>Fracture:</strong> cracks from both edges meet, leaving a fracture zone and burr.'])) +
+      pair(
+        card('Clearance decides edge quality', ul(['<strong>Too small:</strong> fracture lines miss, double burnish, higher force.', '<strong>Too large:</strong> metal pinched, large burr and rollover.', 'The die opening needs angular clearance so the slug drops through.'])) +
+        card('Cutting force', ul(['Depends on shear strength (or tensile strength), thickness and length of the cut edge.', 'Sets the press tonnage.', 'Angled shear on the punch face lowers peak force without lowering the work done.']))
+      ) +
+      tbl(['', 'Blanking', 'Punching (piercing)'], [
+        ['What is kept', 'The cut-out piece (the blank)', 'The sheet. The slug is scrap'],
+        ['Die size', 'Takes the blank size', 'Hole size plus clearance (larger)'],
+        ['Punch size', 'Smaller than the blank by the clearance', 'Takes the hole size']]) +
+      tip('The part takes its size from the tool it is pushed against: the die for a blank, the punch for a hole.') +
+      card('The cutting family', ul(['<strong>Shearing, cutoff, parting</strong> (parting removes a strip of scrap), <strong>slotting, perforating, notching, seminotching.</strong>', '<strong>Trimming</strong> removes excess from a formed part. <strong>Shaving</strong> refines a rough edge with very small clearance.', '<strong>Fine blanking:</strong> tiny clearance with V-ring and counter-punch gives a fully burnished edge, about &plusmn;0.025 mm.'])) +
+      topic('Bending') +
+      card('Bending basics', ul([
+        'The outside of the bend is stretched, the inside is compressed, and the <strong>neutral axis</strong> keeps its original length.',
+        '<strong>V-bending:</strong> V-shaped punch and die, wide range of angles, cheap dies, often on a press brake.',
+        '<strong>Edge bending:</strong> cantilever loading with a pressure pad, usually 90&deg; or less, higher production.',
+        '<strong>Bend allowance:</strong> flat length of the bend along the neutral axis. On tight bends the neutral axis shifts toward the inside, hence a smaller stretch factor.'])) +
+      pair(
+        card('Springback', ul(['Stored elastic energy makes the bend partly recover when the punch lifts.', 'Grows with higher yield strength, lower elastic modulus and larger R/t.', 'Fix by <strong>overbending</strong> or <strong>bottoming</strong> (coining the bend).'])) +
+        card('Bending force', ul(['Depends on tensile strength, width, thickness squared and die opening.', 'V-bending has a higher constant than edge bending.', 'Doubling thickness needs four times the force.']))
+      ) +
+      card('Related operations', ul(['<strong>Flanging:</strong> bend the edge to 90&deg;. <strong>Hemming:</strong> fold the edge over itself. <strong>Seaming:</strong> two hemmed edges joined. <strong>Curling:</strong> roll the edge into a circle.', '<strong>Press brake:</strong> long narrow press, CNC back-gauges make it flexible for low volume.'])) +
+      topic('Drawing') +
+      card('Cup drawing', ul([
+        'The <strong>punch</strong> pushes the blank into the die cavity. The <strong>die</strong> has a corner radius and about 1.1 t clearance per side. The <strong>blankholder</strong> clamps the flange.',
+        'The flange moves inward and its circumference shrinks, so it is under <strong>hoop compression</strong>.',
+        'Blank size comes from equating surface areas (volume constant, thickness barely changes). Add a trim allowance.',
+        'The press must supply the drawing force and the holding force together.'])) +
+      tbl(['One-draw limit', 'Requirement'], [
+        ['Drawing ratio', 'No more than 2.0'],
+        ['Reduction', 'No more than 0.50'],
+        ['Thickness ratio t / blank diameter', 'At least 1% (thinner blanks wrinkle)']]) +
+      tbl(['Defect', 'Cause'], [
+        ['Wrinkling (flange or wall)', 'Holding force too low or blank too thin'],
+        ['Tearing near the base', 'Too much holding force, small die radius, or too large a drawing ratio'],
+        ['Earing', 'Anisotropy of the rolled sheet. Trimmed off'],
+        ['Surface scratches', 'Rough tools or poor lubrication'],
+        ['Uneven wall thickness', 'Thinnest near the base corner. Corrected by ironing']]) +
+      card('When one draw is not enough', ul(['<strong>Redrawing:</strong> a second draw reduces diameter, with smaller allowed reductions.', '<strong>Reverse drawing:</strong> cup turned inside-out, metal bends the opposite way.', '<strong>Ironing:</strong> clearance smaller than wall thickness thins and lengthens the wall.', 'A beverage can: draw, redraw, iron with three rings, dome the base, trim, neck.'])) +
+      topic('Other forming, dies and presses') +
+      tbl(['Process', 'How it works', 'Typical use'], [
+        ['Stretch forming', 'Sheet stretched over a form block, beyond yield (no springback)', 'Aircraft skins'],
+        ['Roll bending', 'Large curves between three rolls', 'Tanks, pipes, arches'],
+        ['Roll forming', 'Strip bent progressively through roll stands', 'Channels, gutters, roofing'],
+        ['Spinning', 'Rotating blank pressed over a mandrel by a roller', 'Reflectors, cookware'],
+        ['Rubber forming (Guerin)', 'Rubber pad replaces half the die', 'Shallow parts, cheap tooling'],
+        ['Hydroforming', 'Pressurised fluid behind a diaphragm', 'Deeper draws'],
+        ['Embossing, beading', 'Shallow raised or recessed patterns', 'Stiffness, ID, decoration']]) +
+      tbl(['Die type', 'Operations', 'Best for'], [
+        ['Simple', 'One per stroke', 'Low volume, cheapest'],
+        ['Compound', 'Two at one station (blank and punch a washer)', 'Good concentricity'],
+        ['Progressive', 'Many stations along a strip, finished part every stroke', 'High volume, expensive die'],
+        ['Transfer', 'Separate parts moved by mechanical fingers', 'Parts too large for a strip']]) +
+      pair(
+        card('Press frames', ul(['<strong>C-frame (gap):</strong> open on three sides, deflects under high load. Includes press brakes.', '<strong>Straight-sided:</strong> stiff, thousands of tonnes, automotive panels.'])) +
+        card('Press drives', ul(['<strong>Mechanical:</strong> flywheel and crank, fast, peak force near bottom of stroke. Suits blanking and punching.', '<strong>Hydraulic:</strong> full force anywhere in a long stroke, slower. Suits deep drawing.']))
+      ) +
+      card('Die components', ul(['Punch and die, punch holder and die shoe, guide pins and bushings, stripper, stock guides and stops.'])),
+    quiz: [
+      Q('In blanking, which tool is made to the blank size and which is made smaller by the clearance?', ['Punch takes the blank size; die is larger', 'Die takes the blank size; punch is made smaller', 'Both are made equal', 'Neither needs clearance'], 1, 'The part takes its size from the tool it is pushed against: the die for a blank, the punch for a hole.'),
+      Q('What results from too small a clearance in shearing?', ['Large burr and rollover', 'Metal pinched between the edges', 'Double burnish and higher force', 'A perfect edge'], 2, 'Too small a clearance makes the fracture lines miss each other. Too large a clearance gives a large burr.'),
+      Q('In a bend, which part of the sheet keeps its original length?', ['The outside surface', 'The inside surface', 'The neutral axis', 'None; all stretch'], 2, 'The outside is stretched and the inside compressed. Bend allowance is measured along the neutral axis.'),
+      Q('Springback increases with:', ['Lower yield strength', 'Higher elastic modulus', 'Smaller bend radius to thickness ratio', 'Higher yield strength, lower elastic modulus and larger bend radius to thickness ratio'], 3, 'It is compensated by overbending or bottoming.'),
+      Q('How does bending force change if sheet thickness is doubled (all else equal)?', ['It doubles', 'It is unchanged', 'It quadruples, because force scales with thickness squared', 'It halves'], 2, 'Bending force depends on t squared.'),
+      Q('Which set gives the limits for drawing a cup in a single operation?', ['Drawing ratio at most 2.0, reduction at most 0.50, thickness ratio at least 1%', 'Drawing ratio at least 2.0 and reduction at least 0.50', 'Thickness ratio below 1%', 'No limits apply'], 0, 'If a limit is exceeded the cup must be redrawn, often with annealing between steps.'),
+      Q('Why does the flange wrinkle in cup drawing when holding force is too low?', ['Its circumference shrinks as it moves inward, creating hoop compression that buckles it', 'The flange is stretched in tension', 'The punch is too sharp', 'The sheet is too thick'], 0, 'The blankholder clamps the flange so it slides in without buckling.'),
+      Q('Tearing near the base of a drawn cup is caused by:', ['Too little holding force', 'Anisotropy of the sheet', 'Too much holding force, too small a die radius or too large a drawing ratio', 'Poor surface finish on the blank'], 2, 'High tensile stress cracks the wall near the base. Earing, by contrast, comes from anisotropy.'),
+      Q('Which die type produces a finished part every press stroke from a strip moving through many stations?', ['Simple die', 'Compound die', 'Transfer die', 'Progressive die'], 3, 'Progressive dies suit high volume but are expensive. Transfer dies carry separate parts between stations by mechanical fingers.'),
+      Q('Which press drive suits deep drawing?', ['Mechanical, because force peaks near the bottom of the stroke', 'Hydraulic, because it gives full force anywhere in a long stroke', 'Either, because they behave identically', 'Neither'], 1, 'Mechanical presses are fast and suit blanking and punching.')
+    ]
+  });
+
+  /* ---------------- App state and helpers ---------------- */
+  var main = document.getElementById('main');
+  var sidebar = document.getElementById('sidebar');
+  var overlay = document.getElementById('overlay');
+  var LET = 'ABCD';
+  var quiz = null;       // active quiz state
+  var tabState = {};     // per lecture: 'summary' | 'quiz'
+
+  function store(get, k, v) {
+    try { if (get) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) {}
+    return null;
+  }
+  function best(id) { var v = store(true, 'mng222-best-' + id); return v ? v : null; }
+  function saveBest(id, score, total) {
+    var cur = best(id);
+    var pct = score / total;
+    if (!cur || pct > parseFloat(cur.split('/')[0]) / parseFloat(cur.split('/')[1])) store(false, 'mng222-best-' + id, score + '/' + total);
+  }
+  function shuffle(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+  function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  function lecIndex(id) { for (var i = 0; i < L.length; i++) if (L[i].id === id) return i; return -1; }
+
+  /* Build quiz question set with shuffled options, keeping track of the correct one */
+  function prep(qs) {
+    return qs.map(function (q) {
+      var idx = shuffle(q.o.map(function (_, i) { return i; }));
+      return { p: q.p, e: q.e, o: idx.map(function (i) { return q.o[i]; }), c: idx.indexOf(q.c) };
     });
-    document.querySelector('.sidebar').classList.remove('open');
-    document.getElementById('overlay').classList.remove('open');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  function allQuestions() { var a = []; L.forEach(function (l) { l.quiz.forEach(function (q) { a.push(q); }); }); return a; }
+
+  /* ---------------- Sidebar ---------------- */
+  function buildSidebar(cur) {
+    var h = '<div class="side-head"><h1>MNG222 Study Guide</h1><p>Manufacturing Processes, lectures 1 to 6</p></div>';
+    h += '<button class="nav-item' + (cur === 'home' ? ' active' : '') + '" data-go="home"><span class="n">&#9679;</span>All lectures</button>';
+    L.forEach(function (l, i) {
+      var b = best(l.id);
+      h += '<button class="nav-item' + (cur === l.id ? ' active' : '') + '" style="--a:' + l.color + '" data-go="' + l.id + '"><span class="n">L' + (i + 1) + '</span><span>' + l.title + '</span>' + (b ? '<span class="best" title="Best quiz score">' + b + '</span>' : '') + '</button>';
+    });
+    h += '<div class="nav-sep"></div><button class="nav-item' + (cur === 'mixed' ? ' active' : '') + '" style="--a:var(--c1)" data-go="mixed"><span class="n">&#9654;</span>Mixed exam (20 questions)</button>';
+    sidebar.innerHTML = h;
   }
 
-  function toggleSidebar() {
-    document.querySelector('.sidebar').classList.toggle('open');
-    document.getElementById('overlay').classList.toggle('open');
+  /* ---------------- Views ---------------- */
+  function renderHome() {
+    var h = '<div class="view"><div class="head" style="--a:var(--c1)"><div class="tag">Study guide</div><h2>Manufacturing Processes, Lectures 1 to 6</h2><p>Pick a lecture for the summary, then test yourself with its multiple-choice quiz. Quiz scores are saved in this browser.</p></div><div class="home-grid">';
+    L.forEach(function (l, i) {
+      var b = best(l.id);
+      h += '<button class="home-card" style="--a:' + l.color + '" data-go="' + l.id + '"><div class="num"><span>Lecture ' + (i + 1) + '</span>' + (b ? '<span class="best">Best ' + b + '</span>' : '<span class="best" style="color:var(--dim)">' + l.quiz.length + ' questions</span>') + '</div><h3>' + l.title + '</h3><p>' + l.blurb + '</p></button>';
+    });
+    h += '<button class="home-card wide" style="--a:var(--c1)" data-go="mixed"><div class="num"><span>Exam practice</span><span class="best" style="color:var(--dim)">' + allQuestions().length + ' questions in the pool</span></div><h3>Mixed exam</h3><p>Twenty random questions from all six lectures.</p></button>';
+    h += '</div></div>';
+    main.innerHTML = h;
   }
+
+  function renderLecture(id) {
+    var i = lecIndex(id), l = L[i];
+    var tab = tabState[id] || 'summary';
+    var prev = L[i - 1], next = L[i + 1];
+    var h = '<div class="view" style="--a:' + l.color + '">';
+    h += '<div class="bar"><button class="btn back" data-go="home">&larr; All lectures</button><div class="arrows"><button class="btn" data-go="' + (prev ? prev.id : '') + '"' + (prev ? '' : ' disabled') + '>&larr; Prev</button><span class="counter">' + (i + 1) + ' / ' + L.length + '</span><button class="btn" data-go="' + (next ? next.id : '') + '"' + (next ? '' : ' disabled') + '>Next &rarr;</button></div></div>';
+    h += '<div class="head"><div class="tag">Lecture ' + (i + 1) + '</div><h2>' + l.title + '</h2><p>' + l.sub + '</p></div>';
+    h += '<div class="tabs" role="tablist"><button class="tab" role="tab" data-tab="summary" aria-selected="' + (tab === 'summary') + '">Summary</button><button class="tab" role="tab" data-tab="quiz" aria-selected="' + (tab === 'quiz') + '">Quiz (' + l.quiz.length + ')</button></div>';
+    h += '<div id="pane"></div>';
+    h += '<div class="bottom"><button class="btn" data-go="' + (prev ? prev.id : '') + '"' + (prev ? '' : ' disabled') + '>&larr; ' + (prev ? 'Lecture ' + i : 'Start') + '</button><button class="btn" data-go="home">All lectures</button><button class="btn" data-go="' + (next ? next.id : '') + '"' + (next ? '' : ' disabled') + '>' + (next ? 'Lecture ' + (i + 2) : 'End') + ' &rarr;</button></div></div>';
+    main.innerHTML = h;
+    renderPane(id);
+  }
+
+  function renderPane(id) {
+    var l = L[lecIndex(id)], pane = document.getElementById('pane');
+    var tab = tabState[id] || 'summary';
+    if (tab === 'summary') { pane.innerHTML = l.summary; quiz = null; }
+    else { startQuiz(id, l.quiz, false); }
+  }
+
+  function renderMixed() {
+    var h = '<div class="view" style="--a:var(--c1)"><div class="bar"><button class="btn back" data-go="home">&larr; All lectures</button></div><div class="head"><div class="tag">Exam practice</div><h2>Mixed exam</h2><p>Twenty random questions drawn from all six lectures.</p></div><div id="pane"></div></div>';
+    main.innerHTML = h;
+    startQuiz('mixed', shuffle(allQuestions()).slice(0, 20), false);
+  }
+
+  /* ---------------- Quiz engine ---------------- */
+  function startQuiz(key, qs, partial) {
+    quiz = { key: key, src: qs, qs: prep(qs), i: 0, score: 0, picked: null, missed: [], done: false, partial: !!partial };
+    drawQuiz();
+  }
+  function drawQuiz() {
+    var pane = document.getElementById('pane');
+    if (!pane || !quiz) return;
+    var q = quiz;
+    if (q.done) { drawResult(pane); return; }
+    var cur = q.qs[q.i];
+    var answered = q.picked !== null;
+    var h = '<div class="quiz"><div class="qmeta"><span>Question ' + (q.i + 1) + ' of ' + q.qs.length + '</span><span>Score ' + q.score + '</span></div><div class="progress"><i style="width:' + ((q.i + (answered ? 1 : 0)) / q.qs.length * 100) + '%"></i></div>';
+    h += '<p class="qprompt">' + esc(cur.p) + '</p><div class="opts">';
+    cur.o.forEach(function (o, i) {
+      var cls = 'opt';
+      if (answered) {
+        if (i === cur.c) cls += ' right'; else if (i === q.picked) cls += ' wrong'; else cls += ' dim';
+      }
+      h += '<button class="' + cls + '" data-opt="' + i + '"' + (answered ? ' disabled' : '') + '><span class="k">' + LET[i] + '</span><span>' + esc(o) + '</span></button>';
+    });
+    h += '</div>';
+    if (answered) {
+      var ok = q.picked === cur.c;
+      h += '<div class="fb ' + (ok ? 'ok' : 'no') + '" role="status"><b>' + (ok ? 'Correct.' : 'Not quite.') + '</b>' + esc(cur.e) + '</div>';
+    }
+    h += '<div class="qfoot"><span class="hint">' + (answered ? 'Press Enter for the next question' : 'Pick an answer, or press A to D') + '</span>' + (answered ? '<button class="btn primary" data-next="1">' + (q.i + 1 === q.qs.length ? 'See results' : 'Next question &rarr;') + '</button>' : '') + '</div></div>';
+    pane.innerHTML = h;
+    var nb = pane.querySelector('[data-next]'); if (nb) nb.focus({ preventScroll: true });
+  }
+  function pick(i) {
+    if (!quiz || quiz.done || quiz.picked !== null) return;
+    var cur = quiz.qs[quiz.i];
+    quiz.picked = i;
+    if (i === cur.c) quiz.score++; else quiz.missed.push({ q: cur, you: cur.o[i] });
+    drawQuiz();
+  }
+  function nextQ() {
+    if (!quiz || quiz.picked === null) return;
+    if (quiz.i + 1 === quiz.qs.length) {
+      quiz.done = true;
+      if (quiz.key !== 'mixed' && !quiz.partial) saveBest(quiz.key, quiz.score, quiz.qs.length);
+      buildSidebar(quiz.key);
+    } else { quiz.i++; quiz.picked = null; }
+    drawQuiz();
+    if (quiz.done) window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  function drawResult(pane) {
+    var q = quiz, n = q.qs.length, pct = Math.round(q.score / n * 100);
+    var msg = pct === 100 ? 'Perfect score.' : pct >= 80 ? 'Strong result. Review the misses below.' : pct >= 50 ? 'Getting there. Re-read the summary and retry the missed ones.' : 'Go back to the summary, then try again.';
+    var h = '<div class="quiz"><div class="qmeta"><span>Finished</span><span>' + n + ' questions</span></div><div class="progress"><i style="width:100%"></i></div><div class="score">' + q.score + ' / ' + n + '</div><p style="margin:0;color:var(--muted)">' + pct + '%. ' + msg + '</p>';
+    h += '<div class="actions"><button class="btn primary" data-retry="all">Retry quiz</button>' + (q.missed.length ? '<button class="btn" data-retry="missed">Retry ' + q.missed.length + ' missed</button>' : '') + (q.key !== 'mixed' ? '<button class="btn" data-tab="summary">Back to summary</button>' : '<button class="btn" data-go="home">All lectures</button>') + '</div>';
+    if (q.missed.length) {
+      h += '<h3 style="margin:30px 0 0;font-size:15px">Missed questions</h3><div class="review">';
+      q.missed.forEach(function (m) {
+        h += '<div class="rv"><p>' + esc(m.q.p) + '</p><span class="you">Your answer: ' + esc(m.you) + '</span><br><span class="ans">Correct: ' + esc(m.q.o[m.q.c]) + '</span><small>' + esc(m.q.e) + '</small></div>';
+      });
+      h += '</div>';
+    }
+    h += '</div>';
+    pane.innerHTML = h;
+  }
+
+  /* ---------------- Routing ---------------- */
+  function route() {
+    var id = (location.hash || '').replace('#', '');
+    var tabPart = null;
+    if (/-quiz$/.test(id)) { id = id.replace(/-quiz$/, ''); tabPart = 'quiz'; }
+    if (lecIndex(id) >= 0) {
+      if (tabPart) tabState[id] = 'quiz';
+      buildSidebar(id); renderLecture(id);
+    } else if (id === 'mixed') { buildSidebar('mixed'); renderMixed(); }
+    else { buildSidebar('home'); renderHome(); }
+    closeMenu();
+    window.scrollTo({ top: 0 });
+  }
+  function go(id) {
+    if (id === undefined || id === '') return;
+    var target = id === 'home' ? '' : id;
+    if ((location.hash || '').replace('#', '') === target) { route(); return; }
+    location.hash = target;
+  }
+  function closeMenu() { sidebar.classList.remove('open'); overlay.classList.remove('open'); }
+
+  document.addEventListener('click', function (e) {
+    var t = e.target.closest('[data-go],[data-tab],[data-opt],[data-next],[data-retry]');
+    if (!t) return;
+    if (t.hasAttribute('data-go')) { go(t.getAttribute('data-go')); return; }
+    if (t.hasAttribute('data-tab')) {
+      var cur = (location.hash || '').replace('#', '').replace(/-quiz$/, '');
+      if (lecIndex(cur) < 0) return;
+      tabState[cur] = t.getAttribute('data-tab');
+      document.querySelectorAll('.tab').forEach(function (b) { b.setAttribute('aria-selected', String(b.getAttribute('data-tab') === tabState[cur])); });
+      renderPane(cur);
+      return;
+    }
+    if (t.hasAttribute('data-opt')) { pick(parseInt(t.getAttribute('data-opt'), 10)); return; }
+    if (t.hasAttribute('data-next')) { nextQ(); return; }
+    if (t.hasAttribute('data-retry')) {
+      var which = t.getAttribute('data-retry');
+      var src = which === 'missed' ? quiz.missed.map(function (m) { var o = m.q; return { p: o.p, o: o.o, c: o.c, e: o.e }; }) : quiz.src;
+      startQuiz(quiz.key, which === 'missed' ? src : (quiz.key === 'mixed' ? shuffle(allQuestions()).slice(0, 20) : quiz.src), which === 'missed');
+      window.scrollTo({ top: 0 });
+    }
+  });
+  document.addEventListener('keydown', function (e) {
+    if (!quiz || quiz.done) return;
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    var k = e.key.toUpperCase(), idx = 'ABCD'.indexOf(k);
+    if (idx < 0 && '1234'.indexOf(k) >= 0 && k.length === 1) idx = parseInt(k, 10) - 1;
+    if (idx >= 0 && idx < quiz.qs[quiz.i].o.length && quiz.picked === null) { e.preventDefault(); pick(idx); }
+    else if (e.key === 'Enter' && quiz.picked !== null) { e.preventDefault(); nextQ(); }
+  });
+  document.getElementById('burger').addEventListener('click', function () { sidebar.classList.toggle('open'); overlay.classList.toggle('open'); });
+  overlay.addEventListener('click', closeMenu);
+  window.addEventListener('hashchange', route);
+  route();
+})();
 </script>
-</body>
-</html>
-"""
 
-with open('MNG222_Study_Guide.html', 'w', encoding='utf-8') as f:
-    f.write(html_content)
+</body></html>
